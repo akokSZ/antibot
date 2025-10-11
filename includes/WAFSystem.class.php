@@ -307,7 +307,8 @@ class WAFSystem
         }
 
         $data = $Api->getData();
-
+      
+        
         # Блокировка, eсли не удалось получить FingerPrint
         if (!isset($data['fingerPrint']) || empty($data['fingerPrint'])) {
             $this->Logger->log("Not FingerPrint");
@@ -339,6 +340,17 @@ class WAFSystem
         $this->Logger->log("FP:  " . $this->Profile->FingerPrint);
 
         ##### BLOCK #####
+
+        # Блокировка BAS-браузера и старых движков Mozilla
+        if(!isset($data['isBas']) || !is_bool($data['isBas'])) {
+            $this->Logger->log("Is no parameter isBas or it is not of type bool");
+            $Api->endJSON('block');
+        }
+        if($data['isBas']) {
+            $this->Logger->log("Blocked: BAS browser detected or old driver Mozilla");
+            $Api->BlockIP($this->Profile->IP, "BAS browser detected or old driver Mozilla");
+            $Api->endJSON('block');
+        }
 
         # Блокировка мобильных девайсов
         if ($this->MobileChecker->enabled) {

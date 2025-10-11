@@ -212,6 +212,7 @@ function checkBot(func) {
 			screen: getObjectBrowser(window.screen),
 			location: getObjectBrowser(window.location),
 			fingerPrint: FINGERPRINT,
+			isBas: isBas(),
 		};
 		Object.assign(obj, obj2);
 	}
@@ -347,6 +348,13 @@ function сheckCookie() {
 	document.cookie = "testcookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 
 	return cookiesEnabled;
+}
+/**
+ * Возвращает true если это старый движок Mozilla или BAS-браузер
+ */
+function isBas() {
+	Object.create(location.reload);
+	return Reflect.ownKeys(location.reload).length === 3;
 }
 
 
