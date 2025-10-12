@@ -20,6 +20,7 @@ class Profile
     public $REQUEST_URI;
     public $FingerPrint;
     public $isMobile;
+    public $FPS;
 
     private function __construct(Config $config)
     {

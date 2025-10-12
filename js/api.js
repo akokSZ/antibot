@@ -10,6 +10,8 @@ const blockFail = document.getElementById("fail");
 let CSRF = "";
 let flagCloseWindow = true;
 let FINGERPRINT = '';
+let FRAME_RATE = 0;
+let IS_LOAD = {}; // готовность всех модулей
 
 
 /*
@@ -44,11 +46,11 @@ function startBanchmark() {
 
 function refresh() {
 	flagCloseWindow = false;
-	
+
 	const currentUrl = new URL(window.location.href);
 	const ref = document.referrer || 'direct';
 
-	if(SAVE_REFERER) {
+	if (SAVE_REFERER) {
 		localStorage.setItem('originalReferrer', ref);
 	}
 
@@ -79,6 +81,9 @@ function pageBlock() {
  * @param pathFile Относительный путь к файлу js
  */
 function loadScript(pathFile, callback) {
+	const callbackName = callback.name || 'anonymous';
+	IS_LOAD[callbackName] = false;
+
 	var script = document.createElement('script');
 	script.src = HTTP_ANTIBOT_PATH + pathFile;
 	script.async = true;
@@ -95,12 +100,25 @@ function initFingerPrint() {
 			.then(fp => fp.get())
 			.then(result => {
 				FINGERPRINT = result.visitorId;
-				checkBot('checks');
+				IS_LOAD["initFingerPrint"] = true;
 			});
 
 	} else {
 		console.error(callback + 'FingerprintJS no load');
 	}
+}
+
+function callbackFrameRate() {
+	if (typeof FrameRateJS !== 'undefined') {
+		FrameRateJS.load()
+			.then(result => {
+				FRAME_RATE = result;
+				IS_LOAD["callbackFrameRate"] = true;
+			});
+	} else {
+		console.error(callback + 'FrameRateJS no load');
+	}
+
 }
 
 function getObjectBrowser(obj, options = {}) {
@@ -213,6 +231,7 @@ function checkBot(func) {
 			location: getObjectBrowser(window.location),
 			fingerPrint: FINGERPRINT,
 			isBas: isBas(),
+			frameRate: FRAME_RATE,
 		};
 		Object.assign(obj, obj2);
 	}
@@ -239,6 +258,7 @@ function checkBot(func) {
 			}
 
 			if (data.func == 'csrf_token') {
+				loadScript('js/frame_rate.js', callbackFrameRate);
 				loadScript('js/fp.min.js', initFingerPrint);
 			}
 			else if (data.status == 'captcha') {
@@ -358,6 +378,8 @@ function isBas() {
 }
 
 
+/* MAIN */
+
 if (METRIKA_ID != '') {
 	ymc(METRIKA_ID, REMOTE_ADDR);
 }
@@ -369,5 +391,26 @@ if (!сheckCookie()) {
 	div.innerHTML = noscript[0].innerHTML;
 	noscript[0].replaceWith(div);
 } else {
+	// Проверяет готовность всех модулей
+	const intervalId = setInterval(async () => {
+		try {
+			if (Object.keys(IS_LOAD).length > 0) {
+				let found = true;
+				for (const value of Object.values(IS_LOAD)) {
+					if (!value) {
+						found = false;
+						break;
+					}
+				}
+				if (found) {
+					checkBot('checks');
+					clearInterval(intervalId);
+				}
+			}
+		} catch (error) {
+			console.error('Ошибка:', error);
+		}
+	}, 500);
+
 	checkBot();
 }

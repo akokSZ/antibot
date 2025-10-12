@@ -39,6 +39,7 @@ class WAFSystem
     public $ASNWhite;
     public $ASNBlock;
     public $ASNCaptcha;
+    public $FPSChecker;
 
 
     public function __construct()
@@ -77,6 +78,7 @@ class WAFSystem
         $this->FingerPrint = new FingerPrint($this->Config, $this->Logger);
         $this->HTTPChecker = new HTTPChecker($this->Config, $this->Logger);
         $this->MobileChecker = new MobileChecker($this->Config, $this->Logger);
+        $this->FPSChecker = new FPSChecker($this->Config, $this->Logger);
         $this->IFrameChecker = new IFrameChecker($this->Config, $this->Logger);
         $this->ASNWhite = new ASNChecker($this->Config, $this->Logger, ['listName' => 'whitelist_asn', 'action' => 'ALLOW']);
         $this->ASNBlock = new ASNChecker($this->Config, $this->Logger, ['listName' => 'blacklist_asn', 'action' => 'BLOCK']);
@@ -308,7 +310,13 @@ class WAFSystem
 
         $data = $Api->getData();
       
-        
+        # Блокировка, если не удалось получить fps
+        if (!isset($data['frameRate']) || empty($data['frameRate'])) {
+            $this->Logger->log("Not frameRate value");
+            $Api->endJSON('block');
+        }
+        $this->Profile->FPS = $data['frameRate'];
+
         # Блокировка, eсли не удалось получить FingerPrint
         if (!isset($data['fingerPrint']) || empty($data['fingerPrint'])) {
             $this->Logger->log("Not FingerPrint");
@@ -338,6 +346,9 @@ class WAFSystem
 
         # Вывод в лог значения FP
         $this->Logger->log("FP:  " . $this->Profile->FingerPrint);
+        
+        if($this->FPSChecker->enabled)
+            $this->Logger->log("FPS: " . $this->Profile->FPS);
 
         ##### BLOCK #####
 
@@ -357,6 +368,16 @@ class WAFSystem
             if ($this->MobileChecker->action == 'BLOCK') {
                 if ($this->MobileChecker->Checking($this->Profile->isMobile, $data['screenWidth'], $data['pixelRatio'])) {
                     $this->Logger->log("Mobile device blocked");
+                    $Api->endJSON('block');
+                }
+            }
+        }
+
+        # Блокировка по FPS
+        if ($this->FPSChecker->enabled) {
+            if ($this->FPSChecker->action == 'BLOCK') {
+                if ($this->FPSChecker->Checking($this->Profile->FPS)) {
+                    $this->Logger->log("Blocked: The fps value is below the set value");
                     $Api->endJSON('block');
                 }
             }
@@ -433,6 +454,16 @@ class WAFSystem
             if ($this->MobileChecker->action == 'CAPTCHA') {
                 if ($this->MobileChecker->Checking($this->Profile->isMobile, $data['screenWidth'], $data['pixelRatio'])) {
                     $this->Logger->log("Show captcha for Mobile device");
+                    $Api->endJSON('captcha');
+                }
+            }
+        }
+
+        # Капча по FPS
+        if ($this->FPSChecker->enabled) {
+            if ($this->FPSChecker->action == 'CAPTCHA') {
+                if ($this->FPSChecker->Checking($this->Profile->FPS)) {
+                    $this->Logger->log("Captcha: The fps value is below the set value");
                     $Api->endJSON('captcha');
                 }
             }
