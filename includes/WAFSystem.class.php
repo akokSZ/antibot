@@ -311,7 +311,7 @@ class WAFSystem
         $data = $Api->getData();
       
         # Блокировка, если не удалось получить fps
-        if (!isset($data['frameRate']) || empty($data['frameRate'])) {
+        if (!isset($data['frameRate'])) {
             $this->Logger->log("Not frameRate value");
             $Api->endJSON('block');
         }

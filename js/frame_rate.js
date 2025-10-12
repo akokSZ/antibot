@@ -14,22 +14,36 @@ var FrameRateJS = (function (exports) {
         }
     }
 
-    function load(duration = 500, timeout = 30000) {
+    function load(duration = 500, timeout = 3000) {
         return new Promise((resolve) => {
             let frameCount = 0;
-            let startTime = performance.now();
-            let lastTime = startTime;
-            const samples = [];
+            let startTime = null;
+            let lastTime = null;
+            let samples = [];
             let timeoutId = null;
             let rafId = null;
             let isActive = true;
-            let hiddenStartTime = null;
+
+            function startMeasurement() {
+                frameCount = 0;
+                startTime = performance.now();
+                lastTime = startTime;
+                samples = [];
+                isActive = true;
+
+                rafId = requestAnimationFrame(checkFPS);
+            }
+
+            function stopMeasurement() {
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+                isActive = false;
+            }
 
             function checkFPS(currentTime) {
-                if (!isActive) {
-                    rafId = requestAnimationFrame(checkFPS);
-                    return;
-                }
+                if (!isActive) return;
 
                 frameCount++;
                 
@@ -42,11 +56,10 @@ var FrameRateJS = (function (exports) {
                     frameCount = 0;
                     lastTime = currentTime;
                     
-                    // Если есть хотя бы один измеренный FPS и прошло достаточно времени
-                    if (samples.length > 0 && (currentTime - startTime >= duration)) {
-                        cleanup();
-                        const median = calculateMedian(samples);
-                        resolve(median);
+                    // Проверяем, набрали ли мы достаточное время измерений
+                    const measurementTime = currentTime - startTime;
+                    if (measurementTime >= duration) {
+                        completeMeasurement();
                         return;
                     }
                 }
@@ -54,21 +67,22 @@ var FrameRateJS = (function (exports) {
                 rafId = requestAnimationFrame(checkFPS);
             }
 
+            function completeMeasurement() {
+                cleanup();
+                const median = calculateMedian(samples);
+                resolve(median);
+            }
+
             function handleVisibilityChange() {
                 if (document.hidden) {
-                    // Страница скрыта - приостанавливаем измерения
-                    isActive = false;
-                    hiddenStartTime = performance.now();
+                    // Страница скрыта - останавливаем измерения
+                    if (isActive) {
+                        stopMeasurement();
+                    }
                 } else {
-                    // Страница снова видна - возобновляем измерения
-                    isActive = true;
-                    
-                    // Корректируем временные метки для компенсации времени паузы
-                    if (hiddenStartTime !== null) {
-                        const hiddenDuration = performance.now() - hiddenStartTime;
-                        startTime += hiddenDuration;
-                        lastTime += hiddenDuration;
-                        hiddenStartTime = null;
+                    // Страница снова видна - перезапускаем измерения
+                    if (!isActive) {
+                        startMeasurement();
                     }
                 }
             }
@@ -83,20 +97,36 @@ var FrameRateJS = (function (exports) {
                     rafId = null;
                 }
                 document.removeEventListener('visibilitychange', handleVisibilityChange);
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+                window.removeEventListener('pagehide', handleBeforeUnload);
             }
 
-            // Добавляем обработчик изменения видимости страницы
-            document.addEventListener('visibilitychange', handleVisibilityChange);
-
-            // Таймаут для случаев, когда FPS == 0 или измерения не начинаются
-            timeoutId = setTimeout(() => {
+            function handleBeforeUnload() {
+                // Если страница выгружается, завершаем с текущими результатами
                 cleanup();
                 const currentSamples = samples.filter(sample => sample > 0);
-                const result = calculateMedian(currentSamples);
+                const result = currentSamples.length > 0 ? calculateMedian(currentSamples) : 0;
                 resolve(result);
-            }, timeout);
+            }
 
-            rafId = requestAnimationFrame(checkFPS);
+            // Добавляем обработчики событий
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('beforeunload', handleBeforeUnload);
+            window.addEventListener('pagehide', handleBeforeUnload);
+
+            // Начинаем измерение только если страница видима
+            if (!document.hidden) {
+                startMeasurement();
+            } else {
+                // Ждем пока страница станет видимой
+                const waitForVisible = () => {
+                    if (!document.hidden) {
+                        document.removeEventListener('visibilitychange', waitForVisible);
+                        startMeasurement();
+                    }
+                };
+                document.addEventListener('visibilitychange', waitForVisible);
+            }
         });
     }
 
