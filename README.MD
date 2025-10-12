@@ -213,8 +213,8 @@ url = "https://raw.githubusercontent.com/ipverse/asn-ip/master/as/" ; база A
 ```
 [fps_checker]
 enabled = On
-action = BLOCK ; CAPTCHA - капча, BLOCK - заблокировать, SKIP - ничего не делать
-fps = 30 ; минимальная частота кадров
+action = CAPTCHA ; CAPTCHA - капча, BLOCK - заблокировать, SKIP - ничего не делать
+fps = 50 ; минимальная частота кадров
 ```
 
 ## Отдача 404 заголовка в капчу
