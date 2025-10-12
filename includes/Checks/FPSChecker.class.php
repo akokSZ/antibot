@@ -4,12 +4,12 @@ namespace WAFSystem;
 
 class FPSChecker
 {
-    public $action = 'SKIP';
-    public $enabled = false;
+    public $action = 'CAPTCHA';
+    public $enabled = true;
 
     private $Logger;
     private $modulName = 'fps_checker';
-    private $fps = 30;
+    private $fps = 50;
 
     public function __construct(Config $config, Logger $logger)
     {
