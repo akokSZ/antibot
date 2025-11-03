@@ -76,6 +76,7 @@ mail.ru         # Сервисы mail.ru, vk.com
 googleusercontent.com # Discord +https://discordapp.com
 letsencrypt.org # Бесплатные SSL-сертификаты
 duckduckgo.com  # DuckDuckGo-Favicons-Bot
+w3.org # https://validator.w3.org/
 
 EOT;
         return $defaultContent;
