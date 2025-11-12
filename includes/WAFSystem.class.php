@@ -277,19 +277,19 @@ class WAFSystem
         # Показ капчи для списков
         if ($this->RefererCaptcha->action == 'CAPTCHA') {
             if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
-                $this->Logger->log("REQUEST_URI captcha");
+                $this->Logger->log("HTTP_REFERER captcha");
                 return false;
             }
         }
         # Пропускаем посетителей с реферером
         if ($this->RefererAllow->isReferer($this->Profile->Referer)) {
-            $this->Logger->log("REQUEST_URI allowed");
+            $this->Logger->log("HTTP_REFERER allowed");
             $this->Marker->set();
             return true;
         }
         # Блокировка посетителей с реферером
         if ($this->RefererBlock->isReferer($this->Profile->Referer)) {
-            $this->Logger->log("REQUEST_URI blocked");
+            $this->Logger->log("HTTP_REFERER blocked");
             $this->Template->showBlockPage();
         }
 
