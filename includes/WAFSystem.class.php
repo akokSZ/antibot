@@ -230,11 +230,6 @@ class WAFSystem
                 $this->Marker->set();
                 return true;
             }
-            if ($this->RefererAllow->Checking($this->Profile->Referer)) {
-                $this->Logger->log("HTTP_REFERER allowed");
-                $this->Marker->set();
-                return true;
-            }
         }
 
         # Проверка User-Agent
@@ -254,13 +249,7 @@ class WAFSystem
             }
         }
 
-        # Блокировка Рефереров
-        if ($this->RefererBlock->enabled) {
-            if ($this->RefererBlock->Checking($this->Profile->Referer)) {
-                $this->Logger->log("HTTP_REFERER blocked");
-                $this->Template->showBlockPage();
-            }
-        }
+
 
         # Блокировка URL
         if ($this->RequestBlock->enabled) {
@@ -283,10 +272,18 @@ class WAFSystem
         }
         # Пропускаем посетителей с реферером
         if ($this->RefererAllow->isReferer($this->Profile->Referer)) {
-            # сначала списки
-            if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
-                $this->Logger->log("HTTP_REFERER captcha");
-                return false;
+            # списки исключений
+            if ($this->RefererBlock->enabled) {
+                if ($this->RefererBlock->Checking($this->Profile->Referer)) {
+                    $this->Logger->log("HTTP_REFERER blocked");
+                    $this->Template->showBlockPage();
+                }
+            }
+            if ($this->RefererCaptcha->enabled) {
+                if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
+                    $this->Logger->log("HTTP_REFERER captcha");
+                    return false;
+                }
             }
             $this->Logger->log("HTTP_REFERER allowed");
             $this->Marker->set();
@@ -294,10 +291,19 @@ class WAFSystem
         }
         # Блокировка посетителей с реферером
         if ($this->RefererBlock->isReferer($this->Profile->Referer)) {
-            # сначала списки
-            if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
-                $this->Logger->log("HTTP_REFERER captcha");
-                return false;
+            # списки исключений
+            if ($this->RefererAllow->enabled) {
+                if ($this->RefererAllow->Checking($this->Profile->Referer)) {
+                    $this->Logger->log("HTTP_REFERER allowed");
+                    $this->Marker->set();
+                    return true;
+                }
+            }
+            if ($this->RefererCaptcha->enabled) {
+                if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
+                    $this->Logger->log("HTTP_REFERER captcha");
+                    return false;
+                }
             }
             $this->Logger->log("HTTP_REFERER blocked");
             $this->Template->showBlockPage();
@@ -319,7 +325,7 @@ class WAFSystem
         }
 
         $data = $Api->getData();
-      
+
         # Блокировка, если не удалось получить fps
         if (!isset($data['frameRate'])) {
             $this->Logger->log("Not frameRate value");
@@ -356,18 +362,18 @@ class WAFSystem
 
         # Вывод в лог значения FP
         $this->Logger->log("FP:  " . $this->Profile->FingerPrint);
-        
-        if($this->FPSChecker->enabled)
+
+        if ($this->FPSChecker->enabled)
             $this->Logger->log("FPS: " . $this->Profile->FPS);
 
         ##### BLOCK #####
 
         # Блокировка BAS-браузера и старых движков Mozilla
-        if(!isset($data['isBas']) || !is_bool($data['isBas'])) {
+        if (!isset($data['isBas']) || !is_bool($data['isBas'])) {
             $this->Logger->log("Is no parameter isBas or it is not of type bool");
             $Api->endJSON('block');
         }
-        if($data['isBas']) {
+        if ($data['isBas']) {
             $this->Logger->log("Blocked: BAS browser detected or old driver Mozilla");
             $Api->BlockIP($this->Profile->IP, "BAS browser detected or old driver Mozilla");
             $Api->endJSON('block');
