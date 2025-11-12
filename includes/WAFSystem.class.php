@@ -283,12 +283,22 @@ class WAFSystem
         }
         # Пропускаем посетителей с реферером
         if ($this->RefererAllow->isReferer($this->Profile->Referer)) {
+            # сначала списки
+            if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
+                $this->Logger->log("HTTP_REFERER captcha");
+                return false;
+            }
             $this->Logger->log("HTTP_REFERER allowed");
             $this->Marker->set();
             return true;
         }
         # Блокировка посетителей с реферером
         if ($this->RefererBlock->isReferer($this->Profile->Referer)) {
+            # сначала списки
+            if ($this->RefererCaptcha->Checking($this->Profile->Referer)) {
+                $this->Logger->log("HTTP_REFERER captcha");
+                return false;
+            }
             $this->Logger->log("HTTP_REFERER blocked");
             $this->Template->showBlockPage();
         }

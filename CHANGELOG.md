@@ -1,12 +1,13 @@
 # Changelog
 
-## [0.6.3-beta] - 2025-11-03
+## [0.6.3-beta] - 2025-11-12
 
 ### Added
 - UserAgentChecker: капча, блокировка по листам и регулярным выражениям
 - Детекция старых браузеров Mozilla и старый движок BAS
 - Добавлен модуль FPSChecker: детекция частоты кадров
 - В indexbot добавлен w3.org (https://validator.w3.org)
+- Добавлена проверка по спискам captcha_referer, для referer = ALLOW или BLOCK
 
 ## [0.6.2] - 2025-06-28
 
