@@ -70,6 +70,7 @@ class ASNChecker extends ListBase
 
     protected function eventInitListFile()
     {
+        $this->Logger->log("Create database $this->dbPath", static::class);
         if ($this->Lock->Lock()) {
             try {
                 if (!is_file($this->dbPath)) {
@@ -158,9 +159,8 @@ EOT;
 
     private function updateCacheDB()
     {
+        $this->Logger->log("Start ASN update", static::class);
         if ($this->Lock->Lock()) {
-            $this->Logger->log("Start ASN update", static::class);
-
             try {
                 $countASN = $countNetwork = 0;
                 $arrASN = [];
