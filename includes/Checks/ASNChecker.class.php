@@ -111,7 +111,7 @@ class ASNChecker extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
-# Черный список ASN
+# {$this->listName}
 # Формат: 
 #  ASN # комментарий
 

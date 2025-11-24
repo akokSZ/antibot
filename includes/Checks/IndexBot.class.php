@@ -54,6 +54,7 @@ class IndexBot extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
+# {$this->listName}
 # Список PTR индексирующих роботов. Указывается домен первого уровня.
 
 yandex.ru

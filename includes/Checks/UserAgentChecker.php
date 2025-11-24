@@ -45,6 +45,7 @@ class UserAgentChecker extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
+# {$this->listName}
 # Список совпадений User-agent
 # Можно писать регулярные выражения. Обрабатывается php функцией preg_match(). Правила проверяются поочередно до первого срабатывания.
 # Символ # используется как комментарий.

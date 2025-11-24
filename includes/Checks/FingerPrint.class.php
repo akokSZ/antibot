@@ -37,6 +37,7 @@ class FingerPrint extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
+# {$this->listName}
 # Список FingerPrint
 # Символ # используется как комментарий.
 # 

@@ -39,6 +39,7 @@ class WhiteListIP extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
+# {$this->listName}
 # Белый список IP-адресов
 # Формат: 
 #  IP # комментарий

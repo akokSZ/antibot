@@ -24,6 +24,7 @@ class GrayList extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
+# {$this->listName}
 # Серый список, хранит информацию требующую ручной проверки
 # Формат: данные # тип данных
 

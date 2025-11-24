@@ -30,6 +30,7 @@ class BlackListIP extends ListBase
     protected function createDefaultFileContent()
     {
         $defaultContent = <<<EOT
+# {$this->listName}
 # Черный список IP-адресов
 # Формат: 
 #  IP # комментарий
