@@ -40,8 +40,8 @@ class ASNChecker extends ListBase
             $file = "lists/" . $this->listName;
             $config->set($this->modulName, $this->listName, $file, 'список');
         }
-        
-        if(empty($listName)) {
+
+        if (empty($listName)) {
             $this->enabled = false;
             return;
         }
@@ -135,6 +135,12 @@ EOT;
         }
         $updateTimeDB = filemtime($this->dbPath);
         $updateTimeList = filemtime($this->absolutePath);
+        if ($updateTimeDB === false)
+            $this->Logger->log("Error getting filetime (" . $this->dbPath . ")", static::class);
+
+        if ($updateTimeList === false)
+            $this->Logger->log("Error getting filetime (" . $this->absolutePath . ")", static::class);
+
         if ($updateTimeList > $updateTimeDB) { // обновляем базу, если изменился список ASN
             $this->Logger->log("ASN list modified (" . $this->path . ")", static::class);
             $this->updateCacheDB();
