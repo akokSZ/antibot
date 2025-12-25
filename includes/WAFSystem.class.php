@@ -214,11 +214,9 @@ class WAFSystem
 
         # Разрешенные User-Agent
         if ($this->UserAgentChecker->enabled) {
-            if ($this->UserAgentChecker->action == 'ALLOW') {
-                if ($this->UserAgentChecker->isListed($this->Profile->UserAgent)) {
-                    $this->Logger->log("User-Agent allowed");
-                    return true;
-                }
+            if ($this->UserAgentChecker->isListed($this->Profile->UserAgent)) {
+                $this->Logger->log("User-Agent allowed");
+                return true;
             }
         }
 

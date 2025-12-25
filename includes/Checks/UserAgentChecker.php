@@ -5,7 +5,6 @@ class UserAgentChecker extends ListBase
 {
     protected $listName = 'whitelist_useragent';
 
-    public $action = 'ALLOW';
     public $enabled = true;
     
     private $modulName = 'useragent_checker';
@@ -26,7 +25,6 @@ class UserAgentChecker extends ListBase
         }
         
         $this->enabled = $config->init($this->modulName, 'enabled', $this->enabled);
-        $this->action = $config->init($this->modulName, 'action', $this->action, 'ALLOW - разрешить, SKIP - ничего не делать');
         $this->minLength = $config->init($this->modulName, 'min_length', $this->minLength, 'минимальная длина user-agent');
         $this->maxLength = $config->init($this->modulName, 'max_length', $this->maxLength, 'максимальная длина user-agent');
 
