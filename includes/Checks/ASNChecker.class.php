@@ -195,13 +195,13 @@ EOT;
                         if ($res) {
                             # Вносим данные в кеш-базу
                             $obj = json_decode($res);
-                            if ($obj === null || !isset($obj->subnets)) {
+                            if ($obj === null || !isset($obj->prefixes)) {
                                 $this->Logger->log("Invalid JSON or missing 'subnets' in response: $res", static::class);
                                 continue;
                             }
 
-                            if (sizeof($obj->subnets->ipv4) > 0) {
-                                foreach ($obj->subnets->ipv4 as $cidr) {
+                            if (sizeof($obj->prefixes->ipv4) > 0) {
+                                foreach ($obj->prefixes->ipv4 as $cidr) {
                                     if (\Utility\Network::isValidCidr($cidr) == false) // Валидация входящих данных
                                         continue;
 
@@ -212,9 +212,9 @@ EOT;
                                     array_push($arrNetwork, $cidr);
                                 }
                             }
-                            if (sizeof($obj->subnets->ipv6) > 0) {
+                            if (sizeof($obj->prefixes->ipv6) > 0) {
 
-                                foreach ($obj->subnets->ipv6 as $cidr) {
+                                foreach ($obj->prefixes->ipv6 as $cidr) {
                                     if (\Utility\Network::isValidCidr($cidr) == false) // Валидация входящих данных
                                         continue;
 
