@@ -494,7 +494,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
             iframe.id = "<?= $tagID ?>";
             iframe.tabindex = 0;
             iframe.title = "Виджет с действием &quot;challenge&quot; AWAF";
-            iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; height: 65px;";
+            iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; height: 100px;";
 
             if (document.getElementById("<?= $tagID ?>") == undefined)
                 form.appendChild(iframe);
