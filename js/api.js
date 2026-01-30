@@ -1,14 +1,4 @@
-const head2 = document.getElementById("pSht7");
-const form = document.getElementById("uHkM6");
-const lspinner = document.getElementById("InsTY1");
-const input = document.getElementById("uiEr3");
-const blockSuccessful = document.getElementById("tWuBw3");
-const blockHTTPSecurity = document.getElementById("LfAMd3");
-const blockInput = document.getElementById("ihOWn1");
-const blockVerifying = document.getElementById("verifying");
-const blockFail = document.getElementById("fail");
 let CSRF = "";
-let flagCloseWindow = true;
 let FINGERPRINT = '';
 let FRAME_RATE = 0;
 let IS_LOAD = {}; // готовность всех модулей
@@ -66,32 +56,6 @@ function refresh() {
 	}
 
 	window.location.href = currentUrl.toString();
-}
-function pageBlock() {
-	flagCloseWindow = false;
-	const urlString = window.location.href;
-	const url = new URL(urlString);
-	const protocol = url.protocol; // "https:"
-	const domain = url.hostname;   // "example.com"
-	window.location.href = protocol + '//' + domain + '/?awafblock';
-}
-
-/**
- * Подключает js скрипт к странице
- * @param pathFile Относительный путь к файлу js
- */
-function loadScript(pathFile, callback) {
-	const callbackName = callback.name || 'anonymous';
-	IS_LOAD[callbackName] = false;
-
-	var script = document.createElement('script');
-	script.src = HTTP_ANTIBOT_PATH + pathFile;
-	script.async = true;
-	script.onload = callback;
-	script.onerror = function () {
-		console.error('Error load: ' + pathFile);
-	};
-	document.head.appendChild(script);
 }
 
 function initFingerPrint() {
@@ -198,144 +162,6 @@ function getObjectBrowser(obj, options = {}) {
 	return hasValidProperties ? result : (includeEmpty ? {} : undefined);
 }
 
-function checkBot(func) {
-	var xhr = new XMLHttpRequest();
-	var visitortime = new Date();
-
-	let obj = {
-		func: func == undefined ? 'csrf_token' : func,
-		csrf_token: CSRF,
-		mainFrame: window.top === window.self,
-	};
-
-	if (func !== undefined) {
-		obj2 = { // Данные для отправки
-			datetime: {
-				now: visitortime.toISOString(),
-				timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
-				offsetHours: -(visitortime.getTimezoneOffset() / 60),
-			},
-			clientWidth: document.documentElement.clientWidth,
-			clientHeight: document.documentElement.clientHeight,
-			screenWidth: window.screen.width,
-			screenHeight: window.screen.height,
-			pixelRatio: window.devicePixelRatio || 1,
-			colorDepth: window.screen.colorDepth,
-			pixelDepth: window.screen.pixelDepth,
-			java: window.java ? 1 : 0,
-			referer: document.referrer,
-			document: getObjectBrowser(document),
-			window: getObjectBrowser(window),
-			navigator: getObjectBrowser(navigator),
-			screen: getObjectBrowser(window.screen),
-			location: getObjectBrowser(window.location),
-			fingerPrint: FINGERPRINT,
-			isBas: isBas(),
-			frameRate: FRAME_RATE,
-		};
-		Object.assign(obj, obj2);
-	}
-	console.log(obj);
-
-	let data = null;
-	try {
-		data = JSON.stringify(obj);
-	} catch (e) {
-		console.error('Failed to stringify data:', e);
-	}
-
-	xhr.open('POST', HTTP_ANTIBOT_PATH + 'xhr.php', true);
-	xhr.setRequestHeader('Content-Type', 'application/json');
-
-	xhr.onload = async function () {
-		if (xhr.status >= 200 && xhr.status < 300) {
-			var data = JSON.parse(xhr.responseText);
-
-			CSRF = data.csrf_token;
-			if (CSRF == undefined || CSRF == '') {
-				console.log('Error getting csrf_token');
-				return;
-			}
-
-			if (data.func == 'csrf_token') {
-				loadScript('js/frame_rate.js', callbackFrameRate);
-				loadScript('js/fp.min.js', initFingerPrint);
-			}
-			else if (data.status == 'captcha') {
-				lspinner.style.display = "none";
-				form.style.display = "grid";
-				blockInput.style.display = "none";
-				blockVerifying.style.display = "";
-
-				// loadScript('js/benchmark.js', null);
-				displayCaptcha();
-			}
-			else if (data.status == 'allow') {
-				form.style.display = "none";
-				lspinner.style.display = "none";
-				blockHTTPSecurity.style.display = "none";
-				blockSuccessful.style.display = "block";
-				setTimeout(refresh, 1000);
-			}
-			else if (data.status == 'block') {
-				setTimeout(pageBlock, 1000);
-			}
-			else if (data.status == 'fail') {
-				form.style.display = "grid";
-				lspinner.style.display = "none";
-				blockHTTPSecurity.style.display = "none";
-				blockFail.style.display = "grid";
-				blockInput.style.display = "none";
-			}
-			else if (data.status == 'refresh') {
-				setTimeout(refresh, 1000);
-			}
-			else {
-				console.log(data);
-			}
-		} else {
-			console.error('Request failed with status:', xhr.status, xhr.statusText);
-		}
-	};
-
-	xhr.onerror = function () {
-		console.error('Network error occurred');
-	};
-
-	xhr.send(data);
-}
-
-function displayCaptcha() {
-	input.addEventListener('click', function (event) {
-		if (this.checked) {
-			if (METRIKA_ID != '') {
-				try { ym(METRIKA_ID, 'reachGoal', 'onclickcapcha'); } catch (e) { }
-			}
-			blockInput.style.display = "none";
-			blockVerifying.style.display = "";
-			checkBot('set-marker');
-		}
-	});
-	window.onbeforeunload = function (e) {
-		if (flagCloseWindow) {
-			checkBot('win-close');
-		}
-	};
-
-	displayNone();
-	head2.textContent = "Подтвердите, что вы человек, выполнив указанное действие.";
-	form.style.display = "grid";
-	blockInput.style.display = "grid";
-}
-
-function displayNone() {
-	lspinner.style.display = "none";
-	blockHTTPSecurity.style.display = "none";
-	blockInput.style.display = "none";
-	blockVerifying.style.display = "none";
-	input.checked = '';
-}
-
 function ymc(metrika, ip) {
 	if (typeof ym === 'function') return;
 
@@ -377,6 +203,138 @@ function isBas() {
 	return Reflect.ownKeys(location.reload).length === 3;
 }
 
+// Убирает индикатор проверки
+function spinnerNone() {
+	lspinner.style.display = "none";
+	blockHTTPSecurity.style.display = "none";
+}
+
+/**
+ * Подключает js скрипт к странице
+ * @param pathFile Относительный путь к файлу js
+ */
+function loadScript(pathFile, callback) {
+	const callbackName = callback.name || 'anonymous';
+	IS_LOAD[callbackName] = false;
+
+	var script = document.createElement('script');
+	script.src = HTTP_ANTIBOT_PATH + pathFile;
+	script.async = true;
+	script.onload = callback;
+	script.onerror = function () {
+		console.error('Error load: ' + pathFile);
+	};
+	document.head.appendChild(script);
+}
+
+// Действие после успешной проверки
+function allow() {
+	if (METRIKA_ID != '') {
+		try {
+			ym(METRIKA_ID, 'reachGoal', 'onclickcapcha');
+		} catch (e) { }
+	}
+	form.style.display = "none";
+	lspinner.style.display = "none";
+	blockHTTPSecurity.style.display = "none";
+	blockSuccessful.style.display = "block";
+	setTimeout(refresh, 1000);
+}
+
+// Действие после блокировки
+function block() {
+	flagCloseWindow = false;
+	const urlString = window.location.href;
+	const url = new URL(urlString);
+	const protocol = url.protocol; // "https:"
+	const domain = url.hostname; // "example.com"
+	window.location.href = protocol + '//' + domain + '/?awafblock';
+}
+
+function checkBot(func) {
+	var xhr = new XMLHttpRequest();
+	var visitortime = new Date();
+
+	let obj = {
+		func: func == undefined ? 'csrf_token' : func,
+		csrf_token: CSRF,
+		mainFrame: window.top === window.self,
+	};
+
+	if (func == 'checks') {
+		obj2 = { // Данные для отправки
+			datetime: {
+				now: visitortime.toISOString(),
+				timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
+				offsetHours: -(visitortime.getTimezoneOffset() / 60),
+			},
+			clientWidth: document.documentElement.clientWidth,
+			clientHeight: document.documentElement.clientHeight,
+			screenWidth: window.screen.width,
+			screenHeight: window.screen.height,
+			pixelRatio: window.devicePixelRatio || 1,
+			colorDepth: window.screen.colorDepth,
+			pixelDepth: window.screen.pixelDepth,
+			java: window.java ? 1 : 0,
+			referer: document.referrer,
+			document: getObjectBrowser(document),
+			window: getObjectBrowser(window),
+			navigator: getObjectBrowser(navigator),
+			screen: getObjectBrowser(window.screen),
+			location: getObjectBrowser(window.location),
+			fingerPrint: FINGERPRINT,
+			isBas: isBas(),
+			frameRate: FRAME_RATE,
+		};
+		Object.assign(obj, obj2);
+	}
+	// console.log(obj);
+
+	let data = null;
+	try {
+		data = JSON.stringify(obj);
+	} catch (e) {
+		console.error('Failed to stringify data:', e);
+	}
+
+	xhr.open('POST', HTTP_ANTIBOT_PATH + 'xhr.php', true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+
+	xhr.onload = async function () {
+		if (xhr.status >= 200 && xhr.status < 300) {
+			var data = JSON.parse(xhr.responseText);
+
+			CSRF = data.csrf_token;
+			if (CSRF == undefined || CSRF == '') {
+				console.log('Error getting csrf_token');
+				return;
+			}
+
+			if (data.func == 'csrf_token') {
+				loadScript('js/frame_rate.js', callbackFrameRate);
+				loadScript('js/fp.min.js', initFingerPrint);
+			} else if (data.status == 'captcha') {
+				lspinner.style.display = "none";
+				form.style.display = "grid";
+
+				// loadScript('js/benchmark.js', null);
+				displayCaptcha();
+			} else if (data.status == 'refresh') {
+				setTimeout(refresh, 1000);
+			} else {
+				console.log(data);
+			}
+		} else {
+			console.error('Request failed with status:', xhr.status, xhr.statusText);
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error('Network error occurred');
+	};
+
+	xhr.send(data);
+}
 
 /* MAIN */
 
@@ -385,7 +343,7 @@ if (METRIKA_ID != '') {
 }
 
 if (!сheckCookie()) {
-	displayNone();
+	spinnerNone();
 	noscript = document.querySelectorAll('noscript');
 	const div = document.createElement('div');
 	div.innerHTML = noscript[0].innerHTML;

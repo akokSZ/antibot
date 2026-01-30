@@ -310,18 +310,8 @@ class WAFSystem
         return false;
     }
 
-    public function isAllowed2()
+    public function isAllowed2($Api)
     {
-        $Api = Api::getInstance($this);
-        new SysUpdate($this->Config, $this->Logger); // Обновляем систему пока проходит проверка на роботность
-
-        # Блокировка плохих запросов
-        if (!$Api->isPost()) {
-            $this->Logger->log("Not a POST request");
-            $this->BlackListIP->add($this->Profile->IP, 'Not a POST request');
-            $Api->endJSON('block');
-        }
-
         $data = $Api->getData();
 
         # Блокировка, если не удалось получить fps
@@ -351,12 +341,7 @@ class WAFSystem
             $Api->endJSON(''); // возможно тут нужно добавлять пользователя в черный список
         }
 
-        # Запрос на установку метки
-        if ($data['func'] == 'set-marker' && $Api->isHiddenValue()) {
-            $this->Logger->log("Successfully passed the captcha");
-            $this->Marker->set();
-            $Api->endJSON('allow');
-        }
+
 
         # Вывод в лог значения FP
         $this->Logger->log("FP:  " . $this->Profile->FingerPrint);

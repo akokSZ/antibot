@@ -89,34 +89,10 @@ class CSRF
         return $_SESSION[$this->csrf_token_key];
     }
 
-    # альтернатива random_bytes() для PHP < 7.0.0
-    private function random_bytes_php5($length)
-    {
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $bytes = openssl_random_pseudo_bytes($length, $strong);
-            if ($strong === true) {
-                return $bytes;
-            }
-            trigger_error('OpenSSL produced non-strong bytes', E_USER_WARNING);
-        }
-
-        $bytes = '';
-        for ($i = 0; $i < $length; $i++) {
-            $bytes .= chr(mt_rand(0, 255));
-        }
-        trigger_error('Used fallback random generator (not cryptographically secure)', E_USER_WARNING);
-
-        return $bytes;
-    }
-
     # генерирует случайный код
     private function genKey()
     {
-        if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
-            return bin2hex(random_bytes(32));
-        } else {
-            return bin2hex($this->random_bytes_php5(32));
-        }
+        return \Utility\GenerateRandomName::genKey(64);
     }
 
     /**

@@ -8,6 +8,7 @@ class Marker
     private $profile;
     private $logger;
     private $expireDays;
+    private $nameMarker; // команда установки куки
 
     public function __construct(Config $config, Profile $profile, Logger $logger)
     {
@@ -19,6 +20,23 @@ class Marker
         $config->init('cookie', 'expire_days', 30, 'дней, действия метки');
 
         $this->expireDays = (int)$config->get('cookie', 'expire_days', 30);
+        $this->genNameMarker();
+    }
+
+    public function getNameMarker()
+    {
+        return $this->nameMarker;
+    }
+
+    // Устанавливаем имя маркера для каждой сессии
+    private function genNameMarker()
+    {
+        if (isset($_SESSION['name_marker']) && !empty($_SESSION['name_marker']))
+            $this->nameMarker = $_SESSION['name_marker'];
+        else {
+            $this->nameMarker = \Utility\GenerateRandomName::genFuncName();
+            $_SESSION['name_marker'] = $this->nameMarker;
+        }
     }
 
     function set($time = null)
@@ -38,6 +56,7 @@ class Marker
             setcookie($this->profile->RayIDSecret, $cookie_value, time() + $this->expireDays * 24 * 3600, "/");
         }
         $this->logger->logMessage("Tag set");
+        $this->genNameMarker();
     }
 
     function remove()

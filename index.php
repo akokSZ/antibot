@@ -2,7 +2,10 @@
 
 $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
-if (basename($request_uri) != 'xhr.php' && !isset($isInclude)) { // нужно для совместимости с подключением через .htaccess
+if (
+    pathinfo($request_uri, PATHINFO_FILENAME) != 'xhr'
+    && !isset($isInclude)
+) { // нужно для совместимости с подключением через .htaccess
     $isInclude = true; // блокирует повторное подключение (совместимость с подключением через .htaccess)
 
     include "includes/autoload.php";
