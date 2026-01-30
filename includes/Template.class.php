@@ -8,9 +8,10 @@ class Template
     private $Config;
     private $Profile;
     private $Logger;
-    private $metrika = '101475381';
+    private $metrika = '101475381'; // метрика AWAF
     private $utm_referrer = false;
     private $save_referer = false;
+    private $skin_captcha = "default";
 
     public function __construct(Config $config, Profile $profile, Logger $logger)
     {
@@ -19,9 +20,15 @@ class Template
         $this->Logger = $logger;
 
         $this->Config->init('main', 'header404', false, 'отдает на заглушку 404 заголовок');
-        $this->Config->init('main', 'metrika', $this->metrika, 'Код Яндекс Метрики. Можете установить свой код или оставить текущий для сбора данных о ботах нашими специалистами. Пустая строка отключает показ метрики');
+        $this->metrika = $this->Config->init('main', 'metrika', $this->metrika, 'Код Яндекс Метрики. Можете установить свой код или оставить текущий для сбора данных о ботах нашими специалистами. Пустая строка отключает показ метрики');
+        $this->skin_captcha = $this->Config->init('main', 'captcha_type', $this->skin_captcha, 'Тип капчи: чекбокс, слайдер');
         $this->utm_referrer = $this->Config->init('main', 'utm_referrer', $this->utm_referrer, 'вкл/выкл');
         $this->save_referer = $this->Config->init('main', 'save_referer', $this->save_referer, 'вкл/выкл сохраненние referer в localStorage');
+    }
+
+    function getSkinCaptcha()
+    {
+        return $this->skin_captcha;
     }
 
     # Функция для вывода страницы проверки и ввода капчи

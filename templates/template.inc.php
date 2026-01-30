@@ -474,7 +474,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
     </div>
     <script type="text/javascript">
         var HTTP_ANTIBOT_PATH = '<?= $this->Config->ANTIBOT_PATH; ?>';
-        var METRIKA_ID = '<?= $this->Config->get('main', 'metrika', ''); ?>';
+        var METRIKA_ID = '<?= $this->metrika; ?>';
         var REMOTE_ADDR = '<?= $this->Profile->IP; ?>';
         var UTM_REFERRER = '<?= $this->utm_referrer; ?>';
         var SAVE_REFERER = '<?= $this->save_referer; ?>';
@@ -488,7 +488,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
         function displayCaptcha() {
             spinnerNone();
             var iframe = document.createElement("iframe");
-            iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=default&csrf=" + CSRF;
+            iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?= $this->getSkinCaptcha() ?>&csrf=" + CSRF;
             iframe.allow = "cross-origin-isolated; fullscreen; autoplay";
             iframe.sandbox = "allow-same-origin allow-scripts allow-popups";
             iframe.id = "<?= $tagID ?>";

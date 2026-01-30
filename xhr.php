@@ -7,13 +7,28 @@ try {
     $antiBot = new \WAFSystem\WAFSystem();
 
     $skin = isset($_REQUEST["skin"]) ? $_REQUEST["skin"] : "";
-    // Отображение капчи
+    $skin = preg_replace('/[^a-zA-Z0-9_-]/', '', $skin); // Безопасность
+
     if (!empty($skin)) {
-        switch ($skin) {
-            case "default":
-                require "skins/default.php";
+        $skinsDir = 'skins/';
+        $skinFile = $skinsDir . $skin . '.php';
+
+        // Проверка существования файла
+        if (file_exists($skinFile) && is_readable($skinFile)) {
+            require $skinFile;
+            exit;
+        } else {
+            // Если файл не найден, подключаем файл по умолчанию
+            $defaultFile = $skinsDir . 'default.php';
+            if (file_exists($defaultFile)) {
+                require $defaultFile;
+            } else {
+                // Если default.php тоже нет, показываем ошибку
+                header('HTTP/1.1 404 Not Found');
+                echo 'Скин не найден';
+            }
+            exit;
         }
-        exit;
     }
 
     header('Content-type: application/json; charset=utf-8');
@@ -27,21 +42,20 @@ try {
     }
 
     $data = $Api->getData();
-    
+
     // Проверка браузера
     if (isset($data['func'])) {
         if ($data['func'] == "checks") {
             new \WAFSystem\SysUpdate($antiBot->Config, $antiBot->Logger); // Обновляем систему пока проходит проверка на роботность
             $antiBot->isAllowed2($Api);
         }
-        
+
         // Запрос на установку метки
         else if ($data['func'] == $antiBot->Marker->getNameMarker() && $Api->isHiddenValue()) {
             $antiBot->Logger->log("Successfully passed the captcha");
             $antiBot->Marker->set();
             $Api->endJSON('allow');
         }
-        
     }
     $Api->endJSON('block');
 } catch (Exception $e) {
