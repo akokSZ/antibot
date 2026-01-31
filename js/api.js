@@ -209,6 +209,12 @@ function spinnerNone() {
 	blockHTTPSecurity.style.display = "none";
 }
 
+function spinnerShow()
+{
+	lspinner.style.display = "";
+	blockHTTPSecurity.style.display = "none";
+}
+
 /**
  * Подключает js скрипт к странице
  * @param pathFile Относительный путь к файлу js
@@ -250,6 +256,8 @@ function block() {
 	const domain = url.hostname; // "example.com"
 	window.location.href = protocol + '//' + domain + '/?awafblock';
 }
+
+
 
 function checkBot(func) {
 	var xhr = new XMLHttpRequest();
