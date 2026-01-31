@@ -747,6 +747,7 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
             position: relative;
             width: 300px;
             margin: 0 auto;
+            margin-top: 40px;
             text-align: center;
             transition: opacity 0.5s ease;
             padding: 10px;
@@ -953,6 +954,14 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
         const captcha = document.getElementById('slider-captcha');
         const loadingSpinner = document.getElementById('verifying');
         let isDragging = false;
+
+        function getRandomAngle(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Рандомный угол наклона (10-30° или -10--30°)
+        const angle = getRandomAngle(10, 30) * (Math.random() > 0.5 ? 1 : -1);
+        wrapper.style.transform = `rotate(${angle}deg)`;
 
         // Начальная позиция
         let startX = 0;
