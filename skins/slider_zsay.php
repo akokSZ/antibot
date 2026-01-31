@@ -119,8 +119,8 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
     }
 
     .percent.hint {
-      border-color: #28ff5a;
-      color: #28ff5a;
+      border-color: #4CAF50;
+      color: #4CAF50;
     }
 
     /* индикатор цели */
@@ -187,7 +187,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 
       if (distance < 3) {
         // В зоне - зеленый (одинаковый для обеих тем)
-        return '#28ff5a';
+        return '#4CAF50';
       } else if (distance < 10) {
         // Очень близко - оранжево-желтый
         return '#ffd700';
@@ -227,7 +227,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 
       // Обновляем цвет точки
       if (distance < 3) {
-        dot.style.background = '#28ff5a';
+        dot.style.background = '#4CAF50';
         dot.style.color = '#000';
       } else {
         dot.style.background = color;
