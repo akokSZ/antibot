@@ -23,7 +23,6 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
       min-height: 100vh;
       display: flex;
       justify-content: left;
-      align-items: center;
       transition: background 0.3s;
     }
 
