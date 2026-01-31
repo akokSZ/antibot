@@ -327,7 +327,13 @@ function checkBot(func) {
 
 				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
-			} else if (data.status == 'refresh') {
+			} 
+			else if (data.status == 'allow') {
+				allow();
+			} else if (data.status == 'block') {
+				setTimeout(block, 1000);
+			}
+			else if (data.status == 'refresh') {
 				setTimeout(refresh, 1000);
 			} else {
 				console.log(data);
