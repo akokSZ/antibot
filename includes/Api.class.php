@@ -27,7 +27,7 @@ class Api
             $this->endJSON('fail');
         }
         $this->data = json_decode($input, true);
-        
+
         if (empty($this->data)) {
             $message = "Error: Data is empty";
             $this->WAFSystem->Logger->log($message, [static::class]);
@@ -48,7 +48,7 @@ class Api
         }
 
         if (empty($_COOKIE[session_name()]) && $this->data['mainFrame'] !== true) { // если сессия отсутствует и запуск в iframe
-            $this->WAFSystem->Logger->log("IFrame cross domain: ". $this->data['document']['referrer']);
+            $this->WAFSystem->Logger->log("IFrame cross domain: " . $this->data['document']['referrer']);
             $this->endJSON('fail');
         }
 
@@ -90,10 +90,12 @@ class Api
             $this->removeHiddenValue();
         }
 
-        $res = array_merge([
-            'func' => $this->data['func'],
-            'csrf_token' => $this->CSRF->createCSRF()
-        ], $res);
+        if (isset($this->data['func'])) {
+            $res = array_merge([
+                'func' => $this->data['func'],
+                'csrf_token' => $this->CSRF->createCSRF()
+            ], $res);
+        }
 
         if (sizeof($data) > 0)
             $res = array_merge($res, $data);
