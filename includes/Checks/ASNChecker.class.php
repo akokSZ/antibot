@@ -9,9 +9,9 @@ class ASNChecker extends ListBase
     public $listName = 'blacklist_asn';
     public $enabled = false;
     public $action = 'CAPTCHA';
-    private $url = 'https://raw.githubusercontent.com/ipverse/asn-ip/master/as/'; // база ASN-IP https://github.com/ipverse/asn-ip
-    private $updateTime = 86400; // int Время опроса базы ASN-IP (по умолчанию 1 сутки)
-    private $timeout = 2; // int Таймаут запроса в секундах (по умолчанию 2)
+    private $url = 'https://raw.githubusercontent.com/ipverse/as-ip-blocks/master/as/'; // база ASN-IP https://github.com/ipverse/as-ip-blocks
+    private $updateTime = 604800; // int Время опроса базы ASN-IP (по умолчанию 7 дней)
+    private $timeout = 3; // int Таймаут запроса в секундах (по умолчанию 3)
     private $cachePath = null; // директория для хранения временных файлов
     private $dbPath; // путь до файла базы данных SQLite
     private $db = null; // указатель на кеш-базу данных
@@ -22,6 +22,7 @@ class ASNChecker extends ListBase
     {
         $this->Logger = $logger;
 
+        # Заменяет переменные класса, указанные в $params[]
         if (sizeof($params) > 0) {
             foreach ($params as $key => $value) {
                 if (isset($this->{$key})) {
@@ -34,23 +35,25 @@ class ASNChecker extends ListBase
 
         $this->enabled = $config->init($this->modulName, 'enabled', $this->enabled);
 
-        $listName = $config->get($this->modulName, $this->listName);
+        $listName = $config->get($this->modulName, $this->listName); // запрашивает путь к файлу со списком
         $file = ltrim($listName, "/\\");
-        if ($listName === NULL) {
+        if ($listName === NULL) { // Если в конфиге нет параметра, то создаем
             $file = "lists/" . $this->listName;
             $config->set($this->modulName, $this->listName, $file, 'список');
         }
 
-        if (empty($listName)) {
+        if (empty($listName)) { // Если параметр пуст, то отключаем проверку по списку
             $this->enabled = false;
             return;
         }
 
-        if ($this->action == 'CAPTCHA') {
-            $this->url = $config->init($this->modulName, 'url', $this->url, 'база ASN-IP');
-            $this->timeout = $config->init($this->modulName, 'timeout', $this->timeout, 'таймаут ожидания ответа в секундах');
-            $this->updateTime = $config->init($this->modulName, 'updateTime', $this->updateTime, 'время опроса базы ASN-IP в секундах');
-        }
+        $url = $config->init($this->modulName, 'url', $this->url, 'база ASN-IP https://github.com/ipverse/as-ip-blocks');
+        if ($url == "https://raw.githubusercontent.com/ipverse/as-ip/master/as/") // замена устаревшей переменной
+            $url = $config->set($this->modulName, 'url', $this->url, 'база ASN-IP https://github.com/ipverse/as-ip-blocks');
+
+        $this->url = $url;
+        $this->timeout = $config->init($this->modulName, 'timeout', $this->timeout, 'таймаут ожидания ответа в секундах');
+        $this->updateTime = $config->init($this->modulName, 'updateTime', $this->updateTime, 'время опроса базы ASN-IP в секундах');
 
         if (!$this->enabled) return; // выходим, если модуль выключен
 
@@ -165,7 +168,7 @@ EOT;
 
     private function updateCacheDB()
     {
-        $this->Logger->log("Start ASN update", static::class);
+        $this->Logger->log("Start ASN update from: " . $this->url, static::class);
         if ($this->Lock->Lock()) {
             try {
                 $countASN = $countNetwork = 0;
