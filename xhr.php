@@ -2,6 +2,11 @@
 session_start();
 include "includes/autoload.php";
 
+// Не кешировать
+header('Pragma: no-cache');
+header('Expires: Thu, 18 Aug 1994 05:00:00 GMT');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+
 // Инициализация и запуск системы
 try {
     $antiBot = new \WAFSystem\WAFSystem();
