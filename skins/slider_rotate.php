@@ -785,7 +785,6 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
             width: 0;
             position: absolute;
             left: 0;
-            transition: width 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
             border-radius: 20px;
         }
 
@@ -966,76 +965,131 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
         // Начальная позиция
         let startX = 0;
         let thumbPosition = 0;
-        const maxPosition = track.offsetWidth - thumb.offsetWidth;
+        const thumbWidth = thumb.offsetWidth;
+        const maxPosition = track.offsetWidth - thumbWidth;
+        progress.style.width = thumbWidth;
+
+        function resetSlider() {
+            thumb.style.left = '0';
+            progress.style.width = thumbWidth;
+            startX = 0;
+            thumbPosition = 0;
+        }
+
+        // Проверка, находится ли курсор над thumb
+        function isCursorOverThumb(clientX, clientY) {
+            const thumbRect = thumb.getBoundingClientRect();
+            return (
+                clientX >= thumbRect.left &&
+                clientX <= thumbRect.right &&
+                clientY >= thumbRect.top &&
+                clientY <= thumbRect.bottom
+            );
+        }
+
+        // Глобальные обработчики для контроля выхода за пределы thumb
+        function handleGlobalMouseMove(e) {
+            if (!isDragging) return;
+
+            // Проверяем, находится ли курсор над thumb при движении
+            if (!isCursorOverThumb(e.clientX, e.clientY)) {
+                // Курсор вышел за пределы thumb - сбрасываем
+                isDragging = false;
+                resetSlider();
+                cleanupEvents();
+            }
+        }
+
+        function handleGlobalTouchMove(e) {
+            if (!isDragging || !e.touches[0]) return;
+
+            const touch = e.touches[0];
+            if (!isCursorOverThumb(touch.clientX, touch.clientY)) {
+                // Курсор вышел за пределы thumb - сбрасываем
+                isDragging = false;
+                resetSlider();
+                cleanupEvents();
+            }
+        }
+
+        function handleUp(e){
+            if (!isDragging) return;
+            isDragging = false;
+
+            resetSlider();
+        }
+
+        // Удаляем глобальные обработчики
+        function cleanupEvents() {
+            document.removeEventListener('mousemove', handleGlobalMouseMove);
+            document.removeEventListener('mouseup', handleUp);
+            document.removeEventListener('touchmove', handleGlobalTouchMove);
+            document.removeEventListener('touchend', handleUp);
+        }
 
         // Обработчики для мыши
         thumb.addEventListener('mousedown', (e) => {
             isDragging = true;
-            startX = e.clientX - thumb.getBoundingClientRect().left;
+            const thumbRect = thumb.getBoundingClientRect();
+            startX = e.clientX - thumbRect.left;
             e.preventDefault();
+
+            // Добавляем глобальные обработчики для отслеживания курсора
+            document.addEventListener('mousemove', handleGlobalMouseMove);
+            document.addEventListener('mouseup', handleUp);
         });
 
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-
-            let newPosition = e.clientX - track.getBoundingClientRect().left - startX;
-            newPosition = Math.max(0, Math.min(maxPosition, newPosition));
-
-            thumb.style.left = newPosition + 'px';
-            thumbPosition = newPosition;
-
-            const percent = Math.round((newPosition / maxPosition) * 100);
-            progress.style.width = percent + '%';
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (!isDragging) return;
-            isDragging = false;
-
-            const percent = Math.round((thumbPosition / maxPosition) * 100);
-            if (percent >= 90) {
-                <?= $funcNameSucc ?>();
-            } else {
-                resetSlider();
-            }
-        });
-
-        // Обработчики для тач-устройств
+        // Для touch-устройств
         thumb.addEventListener('touchstart', (e) => {
             isDragging = true;
             startX = e.touches[0].clientX - thumb.getBoundingClientRect().left;
-            e.preventDefault();
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+
+            // Добавляем глобальные обработчики для отслеживания тача
+            document.addEventListener('touchmove', handleGlobalTouchMove);
+            document.addEventListener('touchend', handleUp);
+        }, {
+            passive: false
         });
 
-        document.addEventListener('touchmove', (e) => {
+        // Основной обработчик перемещения для обновления позиции thumb
+        document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
-            let newPosition = e.touches[0].clientX - track.getBoundingClientRect().left - startX;
-            newPosition = Math.max(0, Math.min(maxPosition, newPosition));
+
+            const trackRect = track.getBoundingClientRect();
+
+            let newPosition = e.clientX - trackRect.left - startX;
+            newPosition = Math.min(maxPosition, newPosition);
 
             thumb.style.left = newPosition + 'px';
             thumbPosition = newPosition;
-
-            const percent = Math.round((newPosition / maxPosition) * 100);
-            progress.style.width = percent + '%';
-        });
-
-        document.addEventListener('touchend', () => {
-            if (!isDragging) return;
-            isDragging = false;
+            progress.style.width = newPosition + thumbWidth + 'px';
 
             const percent = Math.round((thumbPosition / maxPosition) * 100);
             if (percent >= 90) {
                 <?= $funcNameSucc ?>();
-            } else {
-                resetSlider();
-            }
+            } 
         });
 
-        function resetSlider() {
-            thumb.style.left = '0';
-            progress.style.width = '0';
-            thumbPosition = 0;
-        }
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging || !e.touches[0]) return;
+
+            const trackRect = track.getBoundingClientRect();
+            const touch = e.touches[0];
+
+            let newPosition = touch.clientX - trackRect.left - startX;
+            newPosition = Math.min(maxPosition, newPosition);
+            thumb.style.left = newPosition + 'px';
+            thumbPosition = newPosition;
+            progress.style.width = newPosition + thumbWidth + 'px';
+
+            const percent = Math.round((thumbPosition / maxPosition) * 100);
+            if (percent >= 90) {
+                <?= $funcNameSucc ?>();
+            }
+        });
 
         function <?= $funcNameSucc ?>() {
             // Плавное исчезновение капчи
