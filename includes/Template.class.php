@@ -19,11 +19,14 @@ class Template
         $this->Profile = $profile;
         $this->Logger = $logger;
 
-        $this->Config->init('main', 'header404', false, 'отдает на заглушку 404 заголовок');
-        $this->metrika = $this->Config->init('main', 'metrika', $this->metrika, 'Код Яндекс Метрики. Можете установить свой код или оставить текущий для сбора данных о ботах нашими специалистами. Пустая строка отключает показ метрики');
+        $this->Config->init('main', 'header404', false, 'отдает на заглушку 404 заголовок');        
         $this->skin_captcha = $this->Config->init('main', 'captcha_type', $this->skin_captcha, 'Тип капчи: default, slider, slider_rotate, slider_zsay');
         $this->utm_referrer = $this->Config->init('main', 'utm_referrer', $this->utm_referrer, 'вкл/выкл');
         $this->save_referer = $this->Config->init('main', 'save_referer', $this->save_referer, 'вкл/выкл сохраненние referer в localStorage');
+
+        $metrika = $this->Config->init('main', 'metrika', $this->metrika, 'Код Яндекс Метрики. Можете установить свой код или оставить текущий для сбора данных о ботах нашими специалистами. Пустая строка отключает показ метрики');
+        if(!empty($metrika))
+            $this->metrika = $metrika;
     }
 
     function getSkinCaptcha()
@@ -41,7 +44,7 @@ class Template
         header('Pragma: no-cache');
         header('Expires: Thu, 18 Aug 1994 05:00:00 GMT');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-
+        
         $this->Logger->log("Displaying the verification page");
         require $this->Config->BasePath . "templates/template.inc.php";
         exit;
