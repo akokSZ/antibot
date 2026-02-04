@@ -486,9 +486,13 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
         const blockHTTPSecurity = document.getElementById("LfAMd3");
 
         function displayCaptcha() {
-            spinnerNone();
             var iframe = document.createElement("iframe");
-            iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?= $this->getSkinCaptcha() ?>&csrf=" + CSRF;
+            iframe.onload = () => {
+                // Показываем содержимое iframe
+                spinnerNone();
+                form.style.cssText = "";
+                head2.textContent = "Подтвердите, что вы человек, выполнив указанное действие.";
+            }
             iframe.allow = "cross-origin-isolated; fullscreen; autoplay";
             iframe.sandbox = "allow-same-origin allow-scripts allow-popups";
             iframe.id = "<?= $tagID ?>";
@@ -496,12 +500,11 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
             iframe.title = "Виджет с действием &quot;challenge&quot; AWAF";
             iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; min-height:200px;";
             iframe.scrolling = "no";
+            iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?= $this->getSkinCaptcha() ?>&csrf=" + CSRF;
 
-            if (document.getElementById("<?= $tagID ?>") == undefined)
-                form.appendChild(iframe);
-
-            head2.textContent = "Подтвердите, что вы человек, выполнив указанное действие.";
-            form.style.display = "grid";
+            // Загружаем, но не показываем iframe
+            form.style.cssText = "position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0;";
+            form.appendChild(iframe);
         }
 
         (function() {

@@ -322,9 +322,6 @@ function checkBot(func) {
 				loadScript('js/frame_rate.js', callbackFrameRate);
 				loadScript('js/fp.min.js', initFingerPrint);
 			} else if (data.status == 'captcha') {
-				lspinner.style.display = "none";
-				form.style.display = "grid";
-
 				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
 			} 
