@@ -68,7 +68,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
       left: 14px;
       width: 44px;
       height: 44px;
-      background: #1f6fff;
+      background: #3c3c3d;
       border-radius: 50%;
       transform: translateY(-50%);
       cursor: pointer;
@@ -111,6 +111,9 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
     }
 
     @media (prefers-color-scheme: light) {
+      .dot {
+        background: #9b9a9a;
+      }
       .percent {
         background: #fff;
         color: #333;
@@ -127,10 +130,11 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
     .target-indicator {
       position: absolute;
       top: 50%;
+      left: -10px;
       transform: translateY(-50%);
       width: 4px;
       height: 50px;
-      background: rgba(40, 255, 90, 0.3);
+      background: #246526;
       z-index: 1;
       border-radius: 2px;
       transition: background 0.3s;
@@ -138,7 +142,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 
     @media (prefers-color-scheme: light) {
       .target-indicator {
-        background: rgba(40, 255, 90, 0.4);
+        background: #4caf50;
       }
     }
   </style>
@@ -263,12 +267,13 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 
     // Инициализация - позиционируем индикатор цели
     function initTargetIndicator() {
-      const barWidth = bar.offsetWidth - 28; // учитываем padding
-      const targetPosition = (targetCenter / 100) * barWidth + 14;
-      targetIndicator.style.left = targetPosition + 'px';
-
-      // Устанавливаем начальный цвет
-      updateBarColor(0);
+      setTimeout(() => {
+        const barWidth = bar.offsetWidth - 28; // учитываем padding
+        const targetPosition = (targetCenter / 100) * barWidth + 14;
+        targetIndicator.style.left = targetPosition + 'px';
+        // Устанавливаем начальный цвет
+        updateBarColor(0);
+      }, 300);
     }
 
     /* мышь */

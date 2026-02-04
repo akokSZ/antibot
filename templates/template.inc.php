@@ -504,6 +504,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
 
             // Загружаем, но не показываем iframe
             form.style.cssText = "position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0;";
+            form.style.display = "grid";
             form.appendChild(iframe);
         }
 
