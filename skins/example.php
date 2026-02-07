@@ -66,18 +66,21 @@ $tagCheckbox = Utility\GenerateRandomName::genFuncName(4, 6);
                         const currentUrl = new URL(window.location.href);
                         currentUrl.searchParams.set('csrf', CSRF);
                         window.location.href = currentUrl.toString();
-                    } 
+                    }
                     // Успешно прошел капчу
                     else if (data.status == 'allow') {
                         parent.allow();
-                    } 
+                    }
                     // НЕ прошел капчу, пользователь заблокирован
                     else if (data.status == 'block') {
                         setTimeout(parent.block, 1000);
-                    } 
+                    }
                     // Технические ошибки, когда требуется вмешательство тех. специалиста
-                    else if (data.status == 'fail') {} 
-                    else {
+                    else if (data.status == 'fail') {}
+                    // Обновить страницу
+                    else if (data.status == 'refresh') {
+                        parent.refresh();
+                    } else {
                         console.log(data);
                     }
                 }

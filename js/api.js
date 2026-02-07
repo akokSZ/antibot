@@ -309,12 +309,7 @@ function checkBot(func) {
 	xhr.onload = async function () {
 		if (xhr.status >= 200 && xhr.status < 300) {
 			var data = JSON.parse(xhr.responseText);
-
 			CSRF = data.csrf_token;
-			if (CSRF == undefined || CSRF == '') {
-				console.log('Error getting csrf_token');
-				return;
-			}
 
 			if (data.status == 'captcha') {
 				// loadScript('js/benchmark.js', null);
@@ -322,12 +317,17 @@ function checkBot(func) {
 			}
 			else if (data.status == 'allow') {
 				allow();
-			} else if (data.status == 'block') {
+			}
+			else if (data.status == 'block') {
 				setTimeout(block, 1000);
 			}
 			else if (data.status == 'refresh') {
 				setTimeout(refresh, 1000);
-			} else {
+			}
+			else if (data.status == 'fail') {
+				console.log(data);
+			}
+			else {
 				console.log(data);
 			}
 		} else {

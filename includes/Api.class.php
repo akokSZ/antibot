@@ -58,7 +58,7 @@ class Api
             $message = $e->getMessage();
             $this->WAFSystem->Logger->log($message, [static::class]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
-            $this->endJSON('captcha');
+            $this->endJSON('fail', ['message' => $message]);
         }
     }
 

@@ -312,6 +312,11 @@ class WAFSystem
 
     public function isAllowed2($Api)
     {
+        # Проверка куки маркера
+        if ($this->Marker->isValid()) {
+            $Api->endJSON('allow');
+        }
+
         $data = $Api->getData();
 
         # Блокировка, если не удалось получить fps

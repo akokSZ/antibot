@@ -1012,7 +1012,7 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
             }
         }
 
-        function handleUp(e){
+        function handleUp(e) {
             if (!isDragging) return;
             isDragging = false;
 
@@ -1070,7 +1070,7 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
             const percent = Math.round((thumbPosition / maxPosition) * 100);
             if (percent >= 90) {
                 <?= $funcNameSucc ?>();
-            } 
+            }
         });
 
         document.addEventListener('touchmove', (e) => {
@@ -1147,7 +1147,11 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
                         setTimeout(parent.block, 1000);
                     }
                     // Технические ошибки, когда требуется вмешательство тех. специалиста
-                    else if (data.status == 'fail') {} else {
+                    else if (data.status == 'fail') {}
+                    // Обновить страницу
+                    else if (data.status == 'refresh') {
+                        parent.refresh();
+                    } else {
                         console.log(data);
                     }
                 }

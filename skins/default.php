@@ -396,8 +396,9 @@ $tagBlockInput = Utility\GenerateRandomName::genFuncName(6, 8);
                     } else if (data.status == 'fail') {
                         displayNone();
                         fail();
-                    } else if (data.status == 'refresh') {
-                        setTimeout(parent.location.reload(), 1000);
+                    }
+                    else if (data.status == 'refresh') {
+                        parent.refresh();
                     } else {
                         console.log(data);
                     }

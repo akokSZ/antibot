@@ -1065,10 +1065,7 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
                     var data = JSON.parse(xhr.responseText);
 
                     CSRF = data.csrf_token;
-                    if (CSRF == undefined || CSRF == '') {
-                        console.log('Error getting csrf_token');
-                        return;
-                    }
+
                     // Перезагружает капчу
                     if (data.status == 'captcha') {
                         const currentUrl = new URL(window.location.href);
@@ -1084,7 +1081,11 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
                         setTimeout(parent.block, 1000);
                     }
                     // Технические ошибки, когда требуется вмешательство тех. специалиста
-                    else if (data.status == 'fail') {} else {
+                    else if (data.status == 'fail') {}
+                    // Обновить страницу
+                    else if (data.status == 'refresh') {
+                        parent.refresh();
+                    } else {
                         console.log(data);
                     }
                 }
