@@ -1,5 +1,9 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    if (!headers_sent()) 
+        session_start();
+}
+
 include "includes/autoload.php";
 
 // Не кешировать
@@ -51,6 +55,7 @@ try {
     // Проверка браузера
     if (isset($data['func'])) {
         if ($data['func'] == "checks") {
+            $antiBot->Logger->rotateIfNeeded(); // ротация логов, пока пользователь ожидает проверку
             new \WAFSystem\SysUpdate($antiBot->Config, $antiBot->Logger); // Обновляем систему пока проходит проверка на роботность
             $antiBot->isAllowed2($Api);
         }

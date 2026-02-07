@@ -46,6 +46,7 @@ class Template
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         
         $this->Logger->log("Displaying the verification page");
+
         require $this->Config->BasePath . "templates/template.inc.php";
         exit;
     }

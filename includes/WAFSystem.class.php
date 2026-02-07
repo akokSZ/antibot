@@ -335,13 +335,6 @@ class WAFSystem
         }
         $this->Profile->REQUEST_URI = $data['location']['pathname'] . $data['location']['search'];
 
-        # Запрос по событию Закрыл страницу или вкладку
-        if ($data['func'] == 'win-close') {
-            $this->Logger->log("Closed the verification page");
-            $Api->endJSON(''); // возможно тут нужно добавлять пользователя в черный список
-        }
-
-
 
         # Вывод в лог значения FP
         $this->Logger->log("FP:  " . $this->Profile->FingerPrint);

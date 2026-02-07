@@ -16,7 +16,7 @@ class Api
     public function __construct(WAFSystem $wafsystem)
     {
         $this->WAFSystem = $wafsystem;
-        $this->CSRF = new CSRF();
+        $this->CSRF = CSRF::getInstance();
         $client_ip = $this->WAFSystem->Profile->IP;
 
         $input = file_get_contents('php://input');
@@ -42,13 +42,13 @@ class Api
             $this->endJSON('fail');
         }
 
-        if ($this->data['func'] == 'csrf_token') {
-            $this->WAFSystem->Logger->rotateIfNeeded(); // делаем ротация логов, пока пользователь ожидает проверку
-            $this->endJSON('ok');
-        }
-
         if (empty($_COOKIE[session_name()]) && $this->data['mainFrame'] !== true) { // если сессия отсутствует и запуск в iframe
             $this->WAFSystem->Logger->log("IFrame cross domain: " . $this->data['document']['referrer']);
+            $this->endJSON('fail');
+        }
+
+        if (!isset($this->data['csrf_token'])) {
+            $this->WAFSystem->Logger->log("Error: Param 'csrf_token' not found");
             $this->endJSON('fail');
         }
 
@@ -90,10 +90,14 @@ class Api
             $this->removeHiddenValue();
         }
 
+        if ($status != 'fail') {
+            $csrf_token = $this->CSRF->createCSRF();
+        }
+
         if (isset($this->data['func'])) {
             $res = array_merge([
                 'func' => $this->data['func'],
-                'csrf_token' => $this->CSRF->createCSRF()
+                'csrf_token' => $csrf_token
             ], $res);
         }
 

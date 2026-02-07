@@ -4,6 +4,7 @@ namespace WAFSystem;
 
 class CSRF
 {
+    private static $_instances = null;
     private $csrf_token_key = 'csrf_tokens'; // название массива токенов
     private $expireTime = 3600; // время жизни токена
     private $tokenPattern = '/^[a-f0-9]{64}$/'; // Шаблон валидации токена (64 hex-символа)
@@ -17,6 +18,15 @@ class CSRF
         if (!isset($_SESSION[$this->csrf_token_key])) {
             $_SESSION[$this->csrf_token_key] = [];
         }
+    }
+
+    public static function getInstance()
+    {
+
+        if (is_null(self::$_instances)) {
+            self::$_instances = new self();
+        }
+        return self::$_instances;
     }
 
     public function createCSRF()

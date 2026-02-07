@@ -1,4 +1,3 @@
-let CSRF = "";
 let FINGERPRINT = '';
 let FRAME_RATE = 0;
 let IS_LOAD = {}; // готовность всех модулей
@@ -209,8 +208,7 @@ function spinnerNone() {
 	blockHTTPSecurity.style.display = "none";
 }
 
-function spinnerShow()
-{
+function spinnerShow() {
 	lspinner.style.display = "";
 	blockHTTPSecurity.style.display = "none";
 }
@@ -318,13 +316,10 @@ function checkBot(func) {
 				return;
 			}
 
-			if (data.func == 'csrf_token') {
-				loadScript('js/frame_rate.js', callbackFrameRate);
-				loadScript('js/fp.min.js', initFingerPrint);
-			} else if (data.status == 'captcha') {
+			if (data.status == 'captcha') {
 				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
-			} 
+			}
 			else if (data.status == 'allow') {
 				allow();
 			} else if (data.status == 'block') {
@@ -381,5 +376,6 @@ if (!сheckCookie()) {
 		}
 	}, 500);
 
-	checkBot();
+	loadScript('js/frame_rate.js', callbackFrameRate);
+	loadScript('js/fp.min.js', initFingerPrint);
 }
