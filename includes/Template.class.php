@@ -24,9 +24,7 @@ class Template
         $this->utm_referrer = $this->Config->init('main', 'utm_referrer', $this->utm_referrer, 'вкл/выкл');
         $this->save_referer = $this->Config->init('main', 'save_referer', $this->save_referer, 'вкл/выкл сохраненние referer в localStorage');
 
-        $metrika = $this->Config->init('main', 'metrika', $this->metrika, 'Код Яндекс Метрики. Можете установить свой код или оставить текущий для сбора данных о ботах нашими специалистами. Пустая строка отключает показ метрики');
-        if(!empty($metrika))
-            $this->metrika = $metrika;
+        $this->metrika = $this->Config->init('main', 'metrika', $this->metrika, 'Код Яндекс Метрики. Можете установить свой код или оставить текущий для сбора данных о ботах нашими специалистами. Пустая строка отключает показ метрики');
     }
 
     function getSkinCaptcha()
