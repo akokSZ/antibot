@@ -6,7 +6,7 @@ class RefererChecker extends ListBase
 {
     public $enabled = true;
     public $action = 'CAPTCHA';
-    public $direct = 'CAPTCHA';
+    public $direct = 'SKIP';
     public $referer = 'SKIP';
 
     protected $HTTP_HOST = '';
