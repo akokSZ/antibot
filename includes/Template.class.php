@@ -11,7 +11,7 @@ class Template
     private $metrika = '101475381'; // метрика AWAF
     private $utm_referrer = false;
     private $save_referer = false;
-    private $skin_captcha = "default";
+    private $skin_captcha = "checkbox";
 
     public function __construct(Config $config, Profile $profile, Logger $logger)
     {
@@ -20,7 +20,7 @@ class Template
         $this->Logger = $logger;
 
         $this->Config->init('main', 'header404', false, 'отдает на заглушку 404 заголовок');        
-        $this->skin_captcha = $this->Config->init('main', 'captcha_type', $this->skin_captcha, 'Тип капчи: default, slider, slider_rotate, slider_zsay');
+        $this->skin_captcha = $this->Config->init('main', 'captcha_type', $this->skin_captcha, 'Тип капчи: checkbox, slider, slider_rotate, slider_zsay');
         $this->utm_referrer = $this->Config->init('main', 'utm_referrer', $this->utm_referrer, 'вкл/выкл');
         $this->save_referer = $this->Config->init('main', 'save_referer', $this->save_referer, 'вкл/выкл сохраненние referer в localStorage');
 

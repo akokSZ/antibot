@@ -28,11 +28,11 @@ try {
             exit;
         } else {
             // Если файл не найден, подключаем файл по умолчанию
-            $defaultFile = $skinsDir . 'default.php';
+            $defaultFile = $skinsDir . 'checkbox.php';
             if (file_exists($defaultFile)) {
                 require $defaultFile;
             } else {
-                // Если default.php тоже нет, показываем ошибку
+                // Если checkbox.php тоже нет, показываем ошибку
                 header('HTTP/1.1 404 Not Found');
                 echo 'Скин не найден';
             }
