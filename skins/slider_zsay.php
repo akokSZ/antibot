@@ -3,7 +3,7 @@ $nonce = \Utility\GenerateRandomName::genKey(17);
 $funcName = \Utility\GenerateRandomName::genFuncName();
 $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 // $tagCheckbox = Utility\GenerateRandomName::genFuncName(4, 6);
-?><html lang="en-US" dir="ltr">
+?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
   <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">

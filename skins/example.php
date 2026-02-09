@@ -2,13 +2,28 @@
 $nonce = \Utility\GenerateRandomName::genKey(17);
 $funcName = \Utility\GenerateRandomName::genFuncName();
 $tagCheckbox = Utility\GenerateRandomName::genFuncName(4, 6);
-?><html lang="en-US" dir="ltr">
+
+$langMap = [
+    "ru" => [
+        "title" => "Проверяем ваш Браузер...",
+        "checking_human" => "Подтвердите, что вы человек",
+    ],
+    "en" => [
+        "title" => "Checking your Browser...",
+        "checking_human" => "Confirm you're human",
+    ],
+    "zh" => [
+        "title" => "正在检查您的浏览器...",
+        "checking_human" => "请确认您是人类",
+    ],
+];
+?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
     <meta http-equiv="content-security-policy"
         content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-    <title>Checking your Browser…</title>
+    <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -21,7 +36,7 @@ $tagCheckbox = Utility\GenerateRandomName::genFuncName(4, 6);
 </head>
 
 <body>
-    <label><input type="checkbox" id="<?= $tagCheckbox ?>">Подтвердите, что вы человек</label>
+    <label><input type="checkbox" id="<?= $tagCheckbox ?>"><?= $langMap[$antiBot->Profile->Language]['checking_human'] ?></label>
     <script type="text/javascript" nonce="<?= $nonce ?>">
         let CSRF = "<?= $_REQUEST["csrf"] ?>";
         var HTTP_ANTIBOT_PATH = '<?= $antiBot->Config->ANTIBOT_PATH; ?>';

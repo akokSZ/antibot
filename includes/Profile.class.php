@@ -8,6 +8,12 @@ class Profile
 
     private static $_instances = null;
     private $salt = '';
+    private $languageMap = [    
+        // Доработать до определения диалектов
+        'zh' => 'zh-CN',
+        'ru' => 'ru-RU',
+        'en' => 'en-US',
+    ];
 
     public $RayID;
     public $RayIDSecret;
@@ -22,6 +28,7 @@ class Profile
     public $isMobile;
     public $FPS;
     public $Language;
+    public $LangAttr;
 
     private function __construct(Config $config)
     {
@@ -35,6 +42,7 @@ class Profile
         $this->Referer = isset($_SERVER['HTTP_REFERER']) ? mb_substr($_SERVER['HTTP_REFERER'], 0, 512) : '';
         $this->REQUEST_URI = isset($_SERVER['REQUEST_URI']) ? mb_substr($_SERVER['REQUEST_URI'], 0, 512) : '';
         $this->Language = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'ru';
+        $this->LangAttr = isset($this->languageMap[$this->Language]) ? $this->languageMap[$this->Language] : "ru-RU";
 
         $this->isIPv6 = filter_var($this->IP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
         $this->isMobile = isset($_SERVER['HTTP_SEC_CH_UA_MOBILE']) ? ($_SERVER['HTTP_SEC_CH_UA_MOBILE'] === '?1' ? true : false) : null; // если null, то далее определяем по косвенным признакам

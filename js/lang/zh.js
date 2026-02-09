@@ -1,0 +1,26 @@
+var lang = {
+    'title': '请稍候…',
+    'checking_human': '正在验证您是否为真人用户，可能需要几秒钟时间。',
+    'security_check': '{domain} 需要先检查您的连接安全性。',
+    'success_text': '验证成功完成',
+    'waiting_response': '正在等待 {domain} 的响应…',
+    'enable_js': '请启用 JavaScript 和 Cookie 以继续',
+    'confirm_human': '请完成下方操作以确认您是人类。',
+    'performance': '性能与安全由 <a rel="noopener noreferer" href="https://github.com/githubniko/antibot" target="_blank">AntibotWAF</a> 提供',
+    'icon': '图标',
+    'widget_action': 'AWAF“验证”操作组件',
+
+    // 拦截页面
+    'block_title': '请注意！',
+    'enable_cookies': '请启用 Cookie。',
+    'block_headline': '抱歉，您的访问已被阻止。',
+    'unable_to_access': '您无法访问',
+    'blocked_why_headline': '为什么我会被阻止？',
+    'blocked_why_detail': '本网站使用安全服务来防范网络攻击。您刚刚的操作触发了安全防护机制。可能导致此阻止的操作包括提交特定词语、SQL 命令或异常格式的数据。',
+    'blocked_resolve_headline': '如何解决此问题？',
+    'blocked_resolve_detail': '您可以发送邮件告知网站所有者您已被阻止。请说明触发此页面的操作，并提供本页底部的 Ray ID。',
+    'ray_id': 'Ray ID：',
+    'your_ip': '您的 IP：',
+    'click_to_reveal': '点击显示',
+    'performance_security': '性能与安全由',
+};

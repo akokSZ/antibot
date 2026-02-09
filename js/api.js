@@ -217,14 +217,16 @@ function spinnerShow() {
  * Подключает js скрипт к странице
  * @param pathFile Относительный путь к файлу js
  */
-function loadScript(pathFile, callback) {
-	const callbackName = callback.name || 'anonymous';
-	IS_LOAD[callbackName] = false;
+function loadScript(pathFile, callback = null) {
+	if (callback != null) {
+		const callbackName = callback.name || 'anonymous';
+		IS_LOAD[callbackName] = false;
+	}
 
 	var script = document.createElement('script');
 	script.src = HTTP_ANTIBOT_PATH + pathFile;
 	script.async = true;
-	script.onload = callback;
+	if (callback !== null) script.onload = callback;
 	script.onerror = function () {
 		console.error('Error load: ' + pathFile);
 	};

@@ -1,6 +1,6 @@
 <?
 $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
-?><html lang="en-US" dir="ltr">
+?><html lang="<?= $this->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -451,7 +451,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
     <div class="main-wrapper" role="main">
         <div class="main-content">
             <h1 class="zone-name-title h1"><?= $_SERVER['SERVER_NAME'] ?></h1>
-            <p id="pSht7" class="h2 spacer-bottom">Проверяем, человек ли вы. Это может занять несколько секунд.</p>
+            <p id="pSht7" class="h2 spacer-bottom" data-translate="checking_human">Проверяем, человек ли вы. Это может занять несколько секунд.</p>
             <div id="uHkM6" style="display: none;">
             </div>
             <div id="InsTY1" class="spacer loading-spinner" style="display: block; visibility: visible;">
@@ -462,13 +462,13 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                     <div></div>
                 </div>
             </div>
-            <div id="LfAMd3" class="core-msg spacer spacer-top">Сначала <?= $_SERVER['SERVER_NAME'] ?> необходимо проверить безопасность
+            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?= $_SERVER['SERVER_NAME'] ?> необходимо проверить безопасность
                 вашего подключения.</div>
             <div id="tWuBw3" style="display: none;">
-                <div id="challenge-success-text" class="h2">Проверка выполнена успешно</div>
-                <div class="core-msg spacer">Ожидание ответа <?= $_SERVER['SERVER_NAME'] ?>...</div>
+                <div id="challenge-success-text" class="h2" data-translate="success_text">Проверка выполнена успешно</div>
+                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?= $_SERVER['SERVER_NAME'] ?>...</div>
             </div><noscript>
-                <div class="h2"><span id="challenge-error-text">Enable JavaScript and cookies to continue</span></div>
+                <div class="h2"><span id="challenge-error-text" data-translate="enable_js">Enable JavaScript and cookies to continue</span></div>
             </noscript>
         </div>
     </div>
@@ -478,7 +478,8 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
         var REMOTE_ADDR = '<?= $this->Profile->IP; ?>';
         var UTM_REFERRER = '<?= $this->utm_referrer; ?>';
         var SAVE_REFERER = '<?= $this->save_referer; ?>';
-        var CSRF = '<? $objCSRF = WAFSystem\CSRF::getInstance(); echo $objCSRF->createCSRF(); ?>';
+        var CSRF = '<? $objCSRF = WAFSystem\CSRF::getInstance();
+                    echo $objCSRF->createCSRF(); ?>';
 
         const head2 = document.getElementById("pSht7");
         const form = document.getElementById("uHkM6");
@@ -492,13 +493,13 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                 // Показываем содержимое iframe
                 spinnerNone();
                 form.style.cssText = "";
-                head2.textContent = "Подтвердите, что вы человек, выполнив указанное действие.";
+                head2.textContent = lang['confirm_human'];
             }
             iframe.allow = "cross-origin-isolated; fullscreen; autoplay";
             iframe.sandbox = "allow-same-origin allow-scripts allow-popups";
             iframe.id = "<?= $tagID ?>";
             iframe.tabindex = 0;
-            iframe.title = "Виджет с действием &quot;challenge&quot; AWAF";
+            iframe.title = lang['widget_action'];
             iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; min-height:200px;";
             iframe.scrolling = "no";
             iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?= $this->getSkinCaptcha() ?>&csrf=" + CSRF;
@@ -519,7 +520,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                         const img = document.createElement('img');
                         img.src = '/favicon.ico';
                         img.className = 'heading-favicon';
-                        img.alt = 'Значок <?= $_SERVER['SERVER_NAME'] ?>';
+                        img.alt = lang['icon'] + ' <?= $_SERVER['SERVER_NAME'] ?>';
                         h1.insertBefore(img, h1.firstChild);
                     }
                 })
@@ -528,6 +529,10 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
             var cpo = document.createElement('script');
             cpo.src = '<?= $this->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpo);
+            
+            var cpoLang = document.createElement('script');
+            cpoLang.src = '<?= $this->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
+            document.getElementsByTagName('head')[0].appendChild(cpoLang);
         }());
     </script>
     <div class="footer" role="contentinfo">
@@ -535,7 +540,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
             <div class="clearfix diagnostic-wrapper">
                 <div class="ray-id">Ray ID: <code><?= $this->Profile->RayID; ?></code></div>
             </div>
-            <div class="text-center" id="footer-text">Производительность и безопасность на платформе <a
+            <div class="text-center" id="footer-text"><span data-translate="performance_security">Производительность и безопасность на платформе</span> <a
                     rel="noopener noreferer" href="https://github.com/githubniko/antibot"
                     target="_blank">AntibotWAF</a></div>
         </div>

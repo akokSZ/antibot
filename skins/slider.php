@@ -2,13 +2,37 @@
 $nonce = \Utility\GenerateRandomName::genKey(17);
 $funcName = \Utility\GenerateRandomName::genFuncName();
 $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
-?><html lang="en-US" dir="ltr">
+
+$langMap = [
+    "ru" => [
+        "title" => "Проверяем ваш Браузер...",
+        "action_name" => "→ Передвиньте ползунок →",
+        "checking_progress" => "Идет проверка...",
+        "stuck_here" => "Stuck here?",
+        "send_feedback" => "Send Feedback",
+    ],
+    "en" => [
+        "title" => "Checking your Browser...",
+        "action_name" => "→ Slide the slider →",
+        "checking_progress" => "Verification in progress...",
+        "stuck_here" => "Stuck here?",
+        "send_feedback" => "Send Feedback",
+    ],
+    "zh" => [
+        "title" => "正在检查您的浏览器...",
+        "action_name" => "→ 滑动滑块 →",
+        "checking_progress" => "正在验证...",
+        "stuck_here" => "卡在这里了？",
+        "send_feedback" => "发送反馈",
+    ],
+];
+?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
     <meta http-equiv="content-security-policy"
         content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-    <title>Checking your Browser…</title>
+    <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -913,7 +937,7 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
                         <div class="slider-progress"></div>
                         <div class="slider-thumb" id="slider-thumb"></div>
                     </div>
-                    <div class="slider-text">→ Передвиньте ползунок →</div>
+                    <div class="slider-text"><?= $langMap[$antiBot->Profile->Language]['action_name'] ?></div>
                 </div>
             </div>
             <div id="verifying" class="aw-container" style="display: none;">
@@ -934,9 +958,9 @@ $funcNameSucc = Utility\GenerateRandomName::genFuncName(4, 6);
                             transform="rotate(-45 5.45408 5.45404)" class="circle"></line>
                     </svg>
                 </div>
-                <div id="verifying-msg"><span id="verifying-text">Идет проверка...</span><br>
-                    <div id="error-overrun" class="error-message" style="display: none;"><span id="fr-overrun">Stuck
-                            here?</span><a href="#refresh" id="fr-overrun-link">Send Feedback</a></div>
+                <div id="verifying-msg"><span id="verifying-text"><?= $langMap[$antiBot->Profile->Language]['checking_progress'] ?></span><br>
+                    <div id="error-overrun" class="error-message" style="display: none;"><span id="fr-overrun"><?= $langMap[$antiBot->Profile->Language]['stuck_here'] ?></span>
+                    <a href="#refresh" id="fr-overrun-link"><?= $langMap[$antiBot->Profile->Language]['send_feedback'] ?></a></div>
                 </div>
             </div>
         </div>
