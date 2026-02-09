@@ -795,7 +795,7 @@ $langMap = [
             left: 0;
             cursor: pointer;
             z-index: 2;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
@@ -808,7 +808,7 @@ $langMap = [
             width: 0;
             position: absolute;
             left: 0;
-            transition: width 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+            /* transition: width 0.15s cubic-bezier(0.22, 0.61, 0.36, 1); */
             border-radius: 20px;
         }
 
@@ -981,7 +981,9 @@ $langMap = [
         // Начальная позиция
         let startX = 0;
         let thumbPosition = 0;
-        const maxPosition = track.offsetWidth - thumb.offsetWidth;
+        const thumbWidth = thumb.offsetWidth;
+        const maxPosition = track.offsetWidth - thumbWidth;
+        progress.style.width = thumbWidth;
 
         // Обработчики для мыши
         thumb.addEventListener('mousedown', (e) => {
@@ -999,8 +1001,8 @@ $langMap = [
             thumb.style.left = newPosition + 'px';
             thumbPosition = newPosition;
 
-            const percent = Math.round((newPosition / maxPosition) * 100);
-            progress.style.width = percent + '%';
+            const percent = Math.round((thumbPosition / maxPosition) * 100);
+            progress.style.width = newPosition + thumbWidth + 'px';
         });
 
         document.addEventListener('mouseup', () => {
@@ -1024,14 +1026,16 @@ $langMap = [
 
         document.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            let newPosition = e.touches[0].clientX - track.getBoundingClientRect().left - startX;
-            newPosition = Math.max(0, Math.min(maxPosition, newPosition));
+            const trackRect = track.getBoundingClientRect();
+            const touch = e.touches[0];
 
+            let newPosition = touch.clientX - trackRect.left - startX;
+            newPosition = Math.min(maxPosition, newPosition);
             thumb.style.left = newPosition + 'px';
             thumbPosition = newPosition;
+            progress.style.width = newPosition + thumbWidth + 'px';
 
-            const percent = Math.round((newPosition / maxPosition) * 100);
-            progress.style.width = percent + '%';
+            const percent = Math.round((thumbPosition / maxPosition) * 100);
         });
 
         document.addEventListener('touchend', () => {
