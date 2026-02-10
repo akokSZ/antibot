@@ -6,7 +6,7 @@ function loadLangScript(pathFile, callback = null) {
     if (callback !== null) script.onload = callback;
     script.onerror = function () {
         if(!fLoad) {
-            loadLangScript('js/lang/ru.js', callbackLanguage);
+            loadLangScript('js/lang/en.js', callbackLanguage);
             fLoad = true;
         } else {
             console.log("Error: Not load language script js/lang/ru.js");
