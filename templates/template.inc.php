@@ -478,8 +478,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
         var REMOTE_ADDR = '<?= $this->Profile->IP; ?>';
         var UTM_REFERRER = '<?= $this->utm_referrer; ?>';
         var SAVE_REFERER = '<?= $this->save_referer; ?>';
-        var CSRF = '<? $objCSRF = WAFSystem\CSRF::getInstance();
-                    echo $objCSRF->createCSRF(); ?>';
+        var CSRF = '';
 
         const head2 = document.getElementById("pSht7");
         const form = document.getElementById("uHkM6");

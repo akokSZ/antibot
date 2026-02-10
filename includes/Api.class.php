@@ -46,6 +46,11 @@ class Api
             $this->WAFSystem->Logger->log("IFrame cross domain: " . $this->data['document']['referrer']);
             $this->endJSON('fail');
         }
+        
+        // Получение csrf_token
+        if($this->data['func'] == "csrf_token") {
+            $this->endJSON('csrf_token');
+        }
 
         if (!isset($this->data['csrf_token'])) {
             $this->WAFSystem->Logger->log("Error: Param 'csrf_token' not found");
@@ -89,7 +94,7 @@ class Api
         if ($status == 'allow') {
             $this->removeHiddenValue();
         }
-
+        
         if ($status != 'fail') {
             $csrf_token = $this->CSRF->createCSRF();
         }
@@ -97,7 +102,7 @@ class Api
         if (isset($this->data['func'])) {
             $res = array_merge([
                 'func' => $this->data['func'],
-                'csrf_token' => $csrf_token
+                'csrf_token' => isset($csrf_token) ? $csrf_token : ""
             ], $res);
         }
 

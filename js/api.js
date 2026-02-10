@@ -313,7 +313,11 @@ function checkBot(func) {
 			var data = JSON.parse(xhr.responseText);
 			CSRF = data.csrf_token;
 
-			if (data.status == 'captcha') {
+			if (data.func == 'csrf_token') {
+				loadScript('js/frame_rate.js', callbackFrameRate);
+				loadScript('js/fp.min.js', initFingerPrint);
+			}
+			else if (data.status == 'captcha') {
 				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
 			}
@@ -378,6 +382,5 @@ if (!сheckCookie()) {
 		}
 	}, 500);
 
-	loadScript('js/frame_rate.js', callbackFrameRate);
-	loadScript('js/fp.min.js', initFingerPrint);
+	checkBot();
 }

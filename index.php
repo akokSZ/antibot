@@ -1,9 +1,6 @@
 <?php
 if (PHP_SAPI !== 'cli') { // не вкл. защиту для CRON и локального запуска php
-    if (session_status() === PHP_SESSION_NONE) {
-        if (!headers_sent())
-            session_start();
-    }
+
 
     $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
@@ -28,6 +25,7 @@ if (PHP_SAPI !== 'cli') { // не вкл. защиту для CRON и локал
             }
         } catch (Exception $e) {
             error_log("AntiBot system failed: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
             header("HTTP/1.1 500 Internal Server Error");
             exit;
         }
