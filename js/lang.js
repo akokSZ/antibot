@@ -17,11 +17,9 @@ function loadLangScript(pathFile, callback = null) {
 
 // Загрузился языковой модуль
 function callbackLanguage() {
-    document.title = (document.title == "Требуется внимание!")
+    document.title = (document.title == "Требуется внимание!") // костыль
         ? document.title = lang['block_title'] : document.title = lang['title'];
     document.querySelectorAll('[data-translate]').forEach(translateElement);
-
-    IS_LOAD["callbackLanguage"] = true;
 }
 
 // Функция для перевода текста
