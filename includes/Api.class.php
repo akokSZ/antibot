@@ -15,6 +15,9 @@ class Api
 
     public function __construct(WAFSystem $wafsystem)
     {
+        if (is_null(self::$_instances)) 
+            self::$_instances = $this;
+
         $this->WAFSystem = $wafsystem;
         $this->CSRF = CSRF::getInstance();
         $client_ip = $this->WAFSystem->Profile->IP;
@@ -69,10 +72,9 @@ class Api
 
     public static function getInstance(WAFSystem $wafsystem)
     {
-
-        if (is_null(self::$_instances)) {
+        if (is_null(self::$_instances)) 
             self::$_instances = new self($wafsystem);
-        }
+        
         return self::$_instances;
     }
 

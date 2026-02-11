@@ -11,6 +11,9 @@ class CSRF
 
     public function __construct()
     {
+        if (is_null(self::$_instances))
+            self::$_instances = $this;
+
         if (session_status() !== PHP_SESSION_ACTIVE) {
             throw new \RuntimeException('Session is not active');
         }
@@ -22,10 +25,9 @@ class CSRF
 
     public static function getInstance()
     {
-
-        if (is_null(self::$_instances)) {
+        if (is_null(self::$_instances))
             self::$_instances = new self();
-        }
+
         return self::$_instances;
     }
 
