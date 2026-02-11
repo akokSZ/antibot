@@ -5,7 +5,7 @@ namespace WAFSystem;
 class FingerPrint extends ListBase
 {
     public $listName = 'blacklist_fingerprint';
-    public $enabled = true;
+    public $enabled = false;
     public $addBlacklistIP = false;
     public $action = 'BLOCK';
 
