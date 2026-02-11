@@ -322,12 +322,15 @@ class WAFSystem
         }
         $this->Profile->FPS = $data['frameRate'];
 
-        # Блокировка, eсли не удалось получить FingerPrint
-        if (!isset($data['fingerPrint']) || empty($data['fingerPrint'])) {
-            $this->Logger->log("Not FingerPrint");
-            $Api->endJSON('block');
+        if ($this->FingerPrint->enabled) {
+            # Блокировка, eсли не удалось получить FingerPrint
+            if (!isset($data['fingerPrint']) || empty($data['fingerPrint'])) {
+                $this->Logger->log("Not FingerPrint");
+                $Api->endJSON('block');
+            }
+            $this->Profile->FingerPrint = $data['fingerPrint']; // дополняем профиль посетителя FP
+            $this->Logger->log("FP:  " . $this->Profile->FingerPrint);
         }
-        $this->Profile->FingerPrint = $data['fingerPrint']; // дополняем профиль посетителя FP
 
         # Блокировка, если не удалось получить Request_Uri
         if (!isset($data['location']['pathname']) || !isset($data['location']['search'])) {
@@ -336,9 +339,6 @@ class WAFSystem
         }
         $this->Profile->REQUEST_URI = $data['location']['pathname'] . $data['location']['search'];
 
-
-        # Вывод в лог значения FP
-        $this->Logger->log("FP:  " . $this->Profile->FingerPrint);
 
         if ($this->FPSChecker->enabled)
             $this->Logger->log("FPS: " . $this->Profile->FPS);
