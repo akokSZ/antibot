@@ -370,7 +370,7 @@ class WAFSystem
         if ($this->FPSChecker->enabled) {
             if ($this->FPSChecker->action == 'BLOCK') {
                 if ($this->FPSChecker->Checking($this->Profile->FPS)) {
-                    $this->Logger->log("Blocked: The fps value is below the set value");
+                    $this->Logger->log("FPS value is below the set value");
                     $Api->endJSON('block');
                 }
             }
@@ -456,7 +456,7 @@ class WAFSystem
         if ($this->FPSChecker->enabled) {
             if ($this->FPSChecker->action == 'CAPTCHA') {
                 if ($this->FPSChecker->Checking($this->Profile->FPS)) {
-                    $this->Logger->log("Captcha: The fps value is below the set value");
+                    $this->Logger->log("FPS value is below the set value");
                     $Api->endJSON('captcha');
                 }
             }
