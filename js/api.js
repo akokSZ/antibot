@@ -1,7 +1,7 @@
 let FINGERPRINT = '';
 let FRAME_RATE = 0;
 let IS_LOAD = {}; // готовность всех модулей
-
+var CSRF = '';
 
 /*
 function isWebWorkerSupported() {
@@ -314,26 +314,19 @@ function checkBot(func) {
 			CSRF = data.csrf_token;
 
 			if (data.func == 'csrf_token') {
-				loadScript('js/frame_rate.js', callbackFrameRate);
-				loadScript('js/fp.min.js', initFingerPrint);
-			}
-			else if (data.status == 'captcha') {
+				loadModules();
+			} else if (data.status == 'captcha') {
 				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
-			}
-			else if (data.status == 'allow') {
+			} else if (data.status == 'allow') {
 				allow();
-			}
-			else if (data.status == 'block') {
+			} else if (data.status == 'block') {
 				setTimeout(block, 1000);
-			}
-			else if (data.status == 'refresh') {
+			} else if (data.status == 'refresh') {
 				setTimeout(refresh, 1000);
-			}
-			else if (data.status == 'fail') {
+			} else if (data.status == 'fail') {
 				console.log(data);
-			}
-			else {
+			} else {
 				console.log(data);
 			}
 		} else {

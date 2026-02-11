@@ -11,6 +11,8 @@ namespace WAFSystem;
 
 class WAFSystem
 {
+    private static $_instances = null;
+
     public $enabled = true;
 
     public $Config;
@@ -44,7 +46,21 @@ class WAFSystem
 
     public function __construct()
     {
+        if (is_null(self::$_instances))
+            self::$_instances = $this;
+
         $this->initializeComponents();
+    }
+
+    /**
+     * Позволяет обратиться к классу из любой точки, после объявления
+     */
+    public static function getInstance()
+    {
+        if (is_null(self::$_instances)) {
+            throw new \Exception('Error: Object WAFSystem is NULL');
+        }
+        return self::$_instances;
     }
 
     private function initializeComponents()
