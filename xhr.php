@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    if (!headers_sent()) 
+    if (!headers_sent())
         session_start();
 }
 
@@ -67,7 +67,7 @@ try {
             $Api->endJSON('allow');
         }
     }
-    $Api->endJSON('refresh');
+    $Api->endJSON('fail', ["message" => "`" . $data['func'] . "` not found"]);
 } catch (Exception $e) {
     error_log("AntiBot system failed: " . $e->getMessage());
     header("HTTP/1.1 500 Internal Server Error");

@@ -15,7 +15,7 @@ class Api
 
     public function __construct(WAFSystem $wafsystem)
     {
-        if (is_null(self::$_instances)) 
+        if (is_null(self::$_instances))
             self::$_instances = $this;
 
         $this->WAFSystem = $wafsystem;
@@ -49,9 +49,9 @@ class Api
             $this->WAFSystem->Logger->log("IFrame cross domain: " . $this->data['document']['referrer']);
             $this->endJSON('fail');
         }
-        
+
         // Получение csrf_token
-        if($this->data['func'] == "csrf_token") {
+        if ($this->data['func'] == "csrf_token") {
             $this->endJSON('csrf_token');
         }
 
@@ -68,13 +68,27 @@ class Api
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail', ['message' => $message]);
         }
+
+        if ($this->data['func'] == "load_module") {
+            $this->endJSON("ok", [
+                "modules" => ["metrika"]
+            ]);
+        }
+
+        if ($this->data['func'] == "get_param") {
+            $this->endJSON("ok", [
+                "metrika" => \WAFSystem\Metrika::getInstance($this->WAFSystem)->get("ID"),
+                "ip" => $this->WAFSystem->Profile->IP,
+                "fp" => $this->WAFSystem->FingerPrint->enabled
+            ]);
+        }
     }
 
     public static function getInstance(WAFSystem $wafsystem)
     {
-        if (is_null(self::$_instances)) 
+        if (is_null(self::$_instances))
             self::$_instances = new self($wafsystem);
-        
+
         return self::$_instances;
     }
 
@@ -96,7 +110,7 @@ class Api
         if ($status == 'allow') {
             $this->removeHiddenValue();
         }
-        
+
         if ($status != 'fail') {
             $csrf_token = $this->CSRF->createCSRF();
         }
