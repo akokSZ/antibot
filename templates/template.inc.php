@@ -529,20 +529,20 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                             const img = document.createElement('img');
                             img.src = '/favicon.ico';
                             img.className = 'heading-favicon';
-                            img.alt = lang['icon'] + ' <?= $_SERVER['SERVER_NAME'] ?>';
+                            img.alt = 'Icon <?= $_SERVER['SERVER_NAME'] ?>';
                             h1.insertBefore(img, h1.firstChild);
                         }
                     })
                     .catch(() => {}); // Игнорируем ошибки
             }, 0);
 
-            var cpo = document.createElement('script');
-            cpo.src = '<?= $this->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
-            document.getElementsByTagName('head')[0].appendChild(cpo);
-
             var cpoLang = document.createElement('script');
             cpoLang.src = '<?= $this->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpoLang);
+            
+            var cpo = document.createElement('script');
+            cpo.src = '<?= $this->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
+            document.getElementsByTagName('head')[0].appendChild(cpo);
         }());
     </script>
     <div class="footer" role="contentinfo">
