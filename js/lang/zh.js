@@ -7,7 +7,6 @@ var lang = {
     'enable_js': '请启用 JavaScript 和 Cookie 以继续',
     'confirm_human': '请完成下方操作以确认您是人类。',
     'performance': '性能与安全由 <a rel="noopener noreferer" href="https://github.com/githubniko/antibot" target="_blank">AntibotWAF</a> 提供',
-    'icon': '图标',
     'widget_action': 'AWAF“验证”操作组件',
 
     // 拦截页面

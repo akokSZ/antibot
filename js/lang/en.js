@@ -7,7 +7,6 @@ var lang = {
   'enable_js': 'Enable JavaScript and cookies to continue',
   'confirm_human': 'Confirm you are human by completing the action below.',
   'performance_security': 'Performance and security by',
-  'icon': 'Icon',
   'widget_action': 'Action widget "challenge" AWAF',
 
   // Block page

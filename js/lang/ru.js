@@ -7,7 +7,6 @@ var lang = {
     'enable_js' : 'Enable JavaScript and cookies to continue',
     'confirm_human' : 'Подтвердите, что вы человек, выполнив указанное действие.',
     'performance' : 'Производительность и безопасность на платформе',
-    'icon' : 'Значок',
     'widget_action' : 'Виджет с действием &quot;challenge&quot; AWAF',
 
     // Страница блокировки
