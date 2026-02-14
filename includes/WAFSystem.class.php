@@ -70,7 +70,7 @@ class WAFSystem
         # вкл/выкл защиты
         $this->enabled = $this->Config->init('main', 'enabled', $this->enabled, 'вкл/выкл');
         if (!$this->enabled) return;
-
+        
         $this->Profile = Profile::getInstance($this->Config);
         $this->Logger = new Logger($this->Config, $this->Profile);
 
@@ -99,6 +99,8 @@ class WAFSystem
         $this->ASNWhite = new ASNChecker($this->Config, $this->Logger, ['listName' => 'whitelist_asn', 'action' => 'ALLOW']);
         $this->ASNBlock = new ASNChecker($this->Config, $this->Logger, ['listName' => 'blacklist_asn', 'action' => 'BLOCK']);
         $this->ASNCaptcha = new ASNChecker($this->Config, $this->Logger, ['listName' => 'captcha_asn', 'action' => 'CAPTCHA']);
+
+        \WAFSystem\Metrika::getInstance($this);
     }
 
     public function run()
