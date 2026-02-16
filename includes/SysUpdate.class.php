@@ -132,6 +132,9 @@ class SysUpdate
                 'logs',
                 'cache',
                 '*.ini',
+                '*.bak',
+                '*.backup',
+                '*.origin',
                 basename($zipFile) // архив
             ];
             $this->removeDirectory($baseDir, $exclude);
