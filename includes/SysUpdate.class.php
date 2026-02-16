@@ -126,14 +126,12 @@ class SysUpdate
         if (is_dir($baseDir)) {
             // Исключения
             $exclude = [
-                '.',
-                '..',
                 '.git',
                 '.gitignore',
                 'lists',
                 'logs',
                 'cache',
-                $this->Config->configFileName, // config.ini
+                '*.ini',
                 basename($zipFile) // архив
             ];
             $this->removeDirectory($baseDir, $exclude);
@@ -177,12 +175,34 @@ class SysUpdate
     {
         if (!is_dir($dir)) return;
 
-        $files = array_diff(
-            scandir($dir),
-            $exclude // исключения
-        );
+        $files = scandir($dir);
+
         foreach ($files as $file) {
+            if ($file == '.' || $file == '..') continue;
+
             $path = $dir . '/' . $file;
+            $shouldExclude = false;
+
+            // Проверка на исключения (точное совпадение или по маске)
+            foreach ($exclude as $pattern) {
+                // Если это маска с звездочкой (например *.ini)
+                if (strpos($pattern, '*') !== false) {
+                    // Преобразуем маску в regex
+                    $regex = '/^' . str_replace(['*', '.'], ['.*', '\.'], $pattern) . '$/';
+                    if (preg_match($regex, $file)) {
+                        $shouldExclude = true;
+                        break;
+                    }
+                }
+                // Точное совпадение имени
+                elseif ($file == $pattern) {
+                    $shouldExclude = true;
+                    break;
+                }
+            }
+
+            if ($shouldExclude) continue;
+
             if (is_dir($path)) {
                 $this->removeDirectory($path, $exclude);
             } else {
