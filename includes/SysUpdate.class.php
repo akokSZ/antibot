@@ -188,7 +188,7 @@ class SysUpdate
                 // Если это маска с звездочкой (например *.ini)
                 if (strpos($pattern, '*') !== false) {
                     // Преобразуем маску в regex
-                    $regex = '/^' . str_replace(['*', '.'], ['.*', '\.'], $pattern) . '$/';
+                    $regex = '/^' . str_replace(['.', '*'], ['\.', '.*'], $pattern) . '$/';
                     if (preg_match($regex, $file)) {
                         $shouldExclude = true;
                         break;
