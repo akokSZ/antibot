@@ -27,8 +27,8 @@ class IndexBot extends ListBase
         }
 
         $cacheDir = $config->CachePath . 'dns';
-        $driver = new \DnsCache\FileCacheDriver($cacheDir);
-        $this->Dns = new \DnsCache\DnsCache($driver);
+        $driver = new \Cache\FileCacheDriver($cacheDir);
+        $this->Dns = new \Cache\DnsCache($driver);
         parent::__construct($file, $config, $logger);
     }
 

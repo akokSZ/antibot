@@ -1,6 +1,6 @@
 <?php
 
-namespace DnsCache;
+namespace Cache;
 
 class RedisCacheDriver implements CacheDriverInterface
 {

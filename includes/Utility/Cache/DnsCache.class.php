@@ -1,6 +1,6 @@
 <?php
 
-namespace DnsCache;
+namespace Cache;
 
 class DnsCache
 {
@@ -72,7 +72,7 @@ class DnsCache
     public function getHostByAddr($ip, $negativeTtl = 3600, $positiveTtl = 86400)
     {
         // Проверяем кэш
-        $cached = $this->driver->getReverseDns($ip);
+        $cached = $this->getReverseDns($ip);
         if ($cached !== false) {  // false означает отсутствие записи
             return $cached === null ? $ip : $cached;
         }
@@ -85,8 +85,35 @@ class DnsCache
         $ttl = $isNegative ? $negativeTtl : $positiveTtl;
 
         // Сохраняем в кэш (для негативных ответов сохраняем null)
-        $this->driver->setReverseDns($ip, $isNegative ? null : $hostname, $ttl);
+        $this->setReverseDns($ip, $isNegative ? null : $hostname, $ttl);
 
         return $hostname;
+    }
+
+    public function setReverseDns($ip, $hostname, $ttl)
+    {
+        $key = 'rdns_' . md5($ip);
+        $data = [
+            'hostname' => $hostname,
+            'expires' => time() + $ttl,
+            'is_negative' => ($hostname === null)
+        ];
+        return $this->driver->set($key, $data, $ttl);
+    }
+
+    public function getReverseDns($ip)
+    {
+        $key = 'rdns_' . md5($ip);
+        $data = $this->driver->get($key);
+
+        if ($data === false) {
+            return false; // Нет записи в кэше
+        }
+
+        if (!isset($data['expires']) || $data['expires'] < time()) {
+            return false; // Запись устарела
+        }
+
+        return $data['is_negative'] ? null : $data['hostname'];
     }
 }

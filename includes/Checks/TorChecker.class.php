@@ -121,8 +121,8 @@ class TorChecker extends ListBase
             $dnsQuery = $reversedIp . '.dnsel.torproject.org';
 
             $cacheDir = $this->Config->CachePath . 'dnstor';
-            $driver = new \DnsCache\FileCacheDriver($cacheDir);
-            $Dns = new \DnsCache\DnsCache($driver);
+            $driver = new \Cache\FileCacheDriver($cacheDir);
+            $Dns = new \Cache\DnsCache($driver);
 
             try {
                 $records = $Dns->getRecord($dnsQuery, DNS_A);

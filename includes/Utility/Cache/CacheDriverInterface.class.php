@@ -1,5 +1,5 @@
 <?php
-namespace DnsCache;
+namespace Cache;
 
 interface CacheDriverInterface {
     /**
@@ -43,7 +43,7 @@ interface CacheDriverInterface {
      * @param int $ttl
      * @return bool
      */
-    public function setReverseDns($ip, $hostname, $ttl);
+    //public function setReverseDns($ip, $hostname, $ttl);
     
     /**
      * @param string $ip
@@ -52,6 +52,6 @@ interface CacheDriverInterface {
      *   null - негативный ответ (hostname не найден)
      *   false - запись отсутствует в кэше
      */
-    public function getReverseDns($ip);
+    //public function getReverseDns($ip);
 
 }

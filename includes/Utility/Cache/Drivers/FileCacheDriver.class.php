@@ -1,6 +1,6 @@
 <?php
 
-namespace DnsCache;
+namespace Cache;
 
 class FileCacheDriver implements CacheDriverInterface
 {
@@ -86,32 +86,5 @@ class FileCacheDriver implements CacheDriverInterface
         }
 
         return $subDir . $safeKey . '.json';
-    }
-
-    public function setReverseDns($ip, $hostname, $ttl)
-    {
-        $key = 'rdns_' . md5($ip);
-        $data = [
-            'hostname' => $hostname,
-            'expires' => time() + $ttl,
-            'is_negative' => ($hostname === null)
-        ];
-        return $this->set($key, $data, $ttl);
-    }
-
-    public function getReverseDns($ip)
-    {
-        $key = 'rdns_' . md5($ip);
-        $data = $this->get($key);
-
-        if ($data === false) {
-            return false; // Нет записи в кэше
-        }
-
-        if (!isset($data['expires']) || $data['expires'] < time()) {
-            return false; // Запись устарела
-        }
-
-        return $data['is_negative'] ? null : $data['hostname'];
     }
 }
