@@ -15,14 +15,15 @@ class Config
     public $ANTIBOT_PATH;
     public $HTTP_HOST;
     public $HTTPS;
-    public $configFileName = 'config.ini';
+    public $configFileName;
     private $configFile;
     private $useBooleanAsOnOff = true;
 
-    private function __construct($documentRoot, $antibotPath)
+    private function __construct($documentRoot, $antibotPath, $nameFile)
     {
         $this->DOCUMENT_ROOT = $documentRoot;
         $this->ANTIBOT_PATH = $antibotPath;
+        $this->configFileName = $nameFile;
         $this->HTTP_HOST = getenv("HTTP_HOST");
         if (isset($_SERVER['HTTPS'])) {
             $this->HTTPS =  $_SERVER['HTTPS'] === 'on' ? true : false;
@@ -43,7 +44,7 @@ class Config
         $this->loadConfig();
     }
 
-    public static function getInstance($documentRoot = null, $antibotPath = null)
+    public static function getInstance($documentRoot = null, $antibotPath = null, $nameFile = null)
     {
         if ($documentRoot === null) {
             $documentRoot = rtrim(getenv("DOCUMENT_ROOT"), "/\\");
@@ -53,10 +54,15 @@ class Config
             $antibotPath = '/antibot/';
         }
 
-        $key = md5($documentRoot . $antibotPath);
+        if ($nameFile === null) {
+            $nameFile = 'config.ini';
+        }
+        
+
+        $key = md5($documentRoot . $antibotPath . $nameFile);
 
         if (!isset(self::$instances[$key])) {
-            self::$instances[$key] = new self($documentRoot, $antibotPath);
+            self::$instances[$key] = new self($documentRoot, $antibotPath, $nameFile);
         }
 
         return self::$instances[$key];
