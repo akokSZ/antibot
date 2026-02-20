@@ -266,7 +266,6 @@ function checkBot(func) {
 	let obj = {
 		func: func == undefined ? 'csrf_token' : func,
 		csrf_token: CSRF,
-		mainFrame: window.top === window.self,
 	};
 
 	if (func == 'checks') {
@@ -292,7 +291,9 @@ function checkBot(func) {
 			location: getObjectBrowser(window.location),
 			fingerPrint: FINGERPRINT,
 			isBas: isBas(),
+			isFrame: window.top === window.self,
 			frameRate: FRAME_RATE,
+			
 		};
 		Object.assign(obj, obj2);
 	}

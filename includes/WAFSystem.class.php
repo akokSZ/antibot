@@ -70,7 +70,7 @@ class WAFSystem
         # вкл/выкл защиты
         $this->enabled = $this->Config->init('main', 'enabled', $this->enabled, 'вкл/выкл');
         if (!$this->enabled) return;
-        
+
         $this->Profile = Profile::getInstance($this->Config);
         $this->Logger = new Logger($this->Config, $this->Profile);
 
@@ -335,7 +335,7 @@ class WAFSystem
 
         # Блокировка, если не удалось получить fps
         if (!isset($data['frameRate'])) {
-            $this->Logger->log("Not frameRate value");
+            $this->Logger->log("`frameRate` not found");
             $Api->endJSON('block');
         }
         $this->Profile->FPS = $data['frameRate'];
@@ -343,7 +343,7 @@ class WAFSystem
         if ($this->FingerPrint->enabled) {
             # Блокировка, eсли не удалось получить FingerPrint
             if (!isset($data['fingerPrint']) || empty($data['fingerPrint'])) {
-                $this->Logger->log("Not FingerPrint");
+                $this->Logger->log("`fingerPrint` missing");
                 $Api->endJSON('block');
             }
             $this->Profile->FingerPrint = $data['fingerPrint']; // дополняем профиль посетителя FP
@@ -352,7 +352,7 @@ class WAFSystem
 
         # Блокировка, если не удалось получить Request_Uri
         if (!isset($data['location']['pathname']) || !isset($data['location']['search'])) {
-            $this->Logger->log("Not Request_Uri");
+            $this->Logger->log("`Request_Uri` missing");
             $Api->endJSON('block');
         }
         $this->Profile->REQUEST_URI = $data['location']['pathname'] . $data['location']['search'];
@@ -365,7 +365,7 @@ class WAFSystem
 
         # Блокировка BAS-браузера и старых движков Mozilla
         if (!isset($data['isBas']) || !is_bool($data['isBas'])) {
-            $this->Logger->log("Is no parameter isBas or it is not of type bool");
+            $this->Logger->log("`isBas` missing");
             $Api->endJSON('block');
         }
         if ($data['isBas']) {
@@ -377,6 +377,15 @@ class WAFSystem
         # Блокировка мобильных девайсов
         if ($this->MobileChecker->enabled) {
             if ($this->MobileChecker->action == 'BLOCK') {
+                if (!isset($data['screenWidth'])) {
+                    $this->Logger->log("`screenWidth` missing");
+                    $Api->endJSON('block');
+                }
+                if (!isset($data['pixelRatio'])) {
+                    $this->Logger->log("`pixelRatio` missing");
+                    $Api->endJSON('block');
+                }
+
                 if ($this->MobileChecker->Checking($this->Profile->isMobile, $data['screenWidth'], $data['pixelRatio'])) {
                     $this->Logger->log("Mobile device blocked");
                     $Api->endJSON('block');
@@ -410,7 +419,12 @@ class WAFSystem
         # Блокировка преходов в iframe
         if ($this->IFrameChecker->enabled) {
             if ($this->IFrameChecker->action == 'BLOCK') {
-                if ($this->IFrameChecker->Checking($data['mainFrame'])) {
+                if (!isset($data['isFrame'])) {
+                    $this->Logger->log("`isFrame` missing");
+                    $Api->endJSON('block');
+                }
+
+                if ($this->IFrameChecker->Checking($data['isFrame'])) {
                     $this->Logger->log("IFrame blocked");
                     $Api->endJSON('block');
                 }
@@ -441,6 +455,10 @@ class WAFSystem
 
         # Показ капчи для Прямых заходов
         if ($this->RefererCaptcha->enabled) {
+            if (!isset($data['referer'])) {
+                $this->Logger->log("`referer` missing");
+                $Api->endJSON('block');
+            }
             # для посетителей с Прямыми заходом
             if ($this->RefererCaptcha->isDirect($data['referer'])) {
                 $this->Logger->log("Show captcha for DIRECT");
@@ -463,6 +481,14 @@ class WAFSystem
         # Проверка для мобильных девайсов
         if ($this->MobileChecker->enabled) {
             if ($this->MobileChecker->action == 'CAPTCHA') {
+                if (!isset($data['screenWidth'])) {
+                    $this->Logger->log("`screenWidth` missing");
+                    $Api->endJSON('block');
+                }
+                if (!isset($data['pixelRatio'])) {
+                    $this->Logger->log("`pixelRatio` missing");
+                    $Api->endJSON('block');
+                }
                 if ($this->MobileChecker->Checking($this->Profile->isMobile, $data['screenWidth'], $data['pixelRatio'])) {
                     $this->Logger->log("Show captcha for Mobile device");
                     $Api->endJSON('captcha');
@@ -483,7 +509,11 @@ class WAFSystem
         # Проверка для iframe
         if ($this->IFrameChecker->enabled) {
             if ($this->IFrameChecker->action == 'CAPTCHA') {
-                if ($this->IFrameChecker->Checking($data['mainFrame'])) {
+                if (!isset($data['isFrame'])) {
+                    $this->Logger->log("`isFrame` missing");
+                    $Api->endJSON('block');
+                }
+                if ($this->IFrameChecker->Checking($data['isFrame'])) {
                     $this->Logger->log("IFrame captcha");
                     $Api->endJSON('captcha');
                 }

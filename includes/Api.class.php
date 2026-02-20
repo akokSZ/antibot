@@ -29,6 +29,12 @@ class Api
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail');
         }
+
+        if (empty($_COOKIE[session_name()])) { // если сессия отсутствует и запуск в iframe
+            $this->WAFSystem->Logger->log("Error: Session cookie missing");
+            $this->endJSON('fail');
+        }
+
         $this->data = json_decode($input, true);
 
         if (empty($this->data)) {
@@ -42,11 +48,6 @@ class Api
             $message = "Error: Value 'func' is not set";
             $this->WAFSystem->Logger->log($message, [static::class]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
-            $this->endJSON('fail');
-        }
-
-        if (empty($_COOKIE[session_name()]) && $this->data['mainFrame'] !== true) { // если сессия отсутствует и запуск в iframe
-            $this->WAFSystem->Logger->log("IFrame cross domain: " . $this->data['document']['referrer']);
             $this->endJSON('fail');
         }
 
