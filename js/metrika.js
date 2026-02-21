@@ -5,7 +5,10 @@ let FINGERPRINT;
  * @returns 
  */
 function ymc(metrika, ip, fp = "") {
-    if (typeof ym === 'function') return;
+    if (typeof ym === 'function') {
+        console.log("AWAF: Duplicate counter " + metrika + " initialization");
+        return;
+    }
 
     try {
         const originalReferrer = localStorage.getItem('originalReferrer')
@@ -17,14 +20,14 @@ function ymc(metrika, ip, fp = "") {
         if (fp != "")
             params.fp = fp;
 
-        (function(m,e,t,r,i,k,a){
-            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id='+metrika, 'ym');
-    
-        ym(metrika, 'init', {ssr:true, webvisor:true, clickmap:true, referrer: originalReferrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params: params});
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + metrika, 'ym');
+
+        ym(metrika, 'init', { ssr: true, webvisor: true, clickmap: true, referrer: originalReferrer, url: location.href, accurateTrackBounce: true, trackLinks: true, params: params });
 
     } catch (e) { console.log(e); }
 }
@@ -54,9 +57,9 @@ function callbackMetrika(data) {
         return;
     }
 
-    if(data.metrika == "")
+    if (data.metrika == "")
         return;
-    
+
     if (data.fp) {
         loadScript("js/fp.min.js", callbackFP);
         const intervalId = setInterval(async () => {
