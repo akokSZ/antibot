@@ -30,11 +30,6 @@ class Api
             $this->endJSON('fail');
         }
 
-        if (empty($_COOKIE[session_name()])) { // если сессия отсутствует и запуск в iframe
-            $this->WAFSystem->Logger->log("Error: Session cookie missing");
-            $this->endJSON('fail');
-        }
-
         $this->data = json_decode($input, true);
 
         if (empty($this->data)) {
