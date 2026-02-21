@@ -50,7 +50,7 @@ function loading(func, callback) {
         if (xhr.status >= 200 && xhr.status < 300) {
             const data = JSON.parse(xhr.responseText);
             CSRF = data.csrf_token;
-            console.log(data);
+            // console.log(data);
 
             if (data.func == 'csrf_token') {
                 loading("load_module");
