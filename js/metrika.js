@@ -5,10 +5,7 @@ let FINGERPRINT;
  * @returns 
  */
 function ymc(metrika, ip, fp = "") {
-    if (typeof ym === 'function') {
-        console.log("AWAF: Duplicate counter " + metrika + " initialization");
-        return;
-    }
+    
 
     try {
         const originalReferrer = localStorage.getItem('originalReferrer')
@@ -19,6 +16,11 @@ function ymc(metrika, ip, fp = "") {
         let params = { ip: ip };
         if (fp != "")
             params.fp = fp;
+
+        if (typeof ym === 'function') {
+            ym(metrika, 'userParams', params); // Передача параметров без иницилиализации
+            return;
+        } 
 
         (function (m, e, t, r, i, k, a) {
             m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
