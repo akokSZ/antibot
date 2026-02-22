@@ -13,11 +13,8 @@ class Api
     private $data; // хранит массив данных из php://input
     private $maxData = 10000; // ограничение на размер входящего объекта
 
-    public function __construct(WAFSystem $wafsystem)
+    private function __construct(WAFSystem $wafsystem)
     {
-        if (is_null(self::$_instances))
-            self::$_instances = $this;
-
         $this->WAFSystem = $wafsystem;
         $this->CSRF = CSRF::getInstance();
         $client_ip = $this->WAFSystem->Profile->IP;
@@ -90,6 +87,8 @@ class Api
 
     public function endJSON($status, $data = [])
     {
+        header('Content-type: application/json; charset=utf-8');
+
         $res = ['status' => $status];
         if (!session_id()) {
             $res = "Critical error: Session session_start() not started.";

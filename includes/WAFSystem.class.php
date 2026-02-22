@@ -44,11 +44,8 @@ class WAFSystem
     public $FPSChecker;
 
 
-    public function __construct()
+    private function __construct()
     {
-        if (is_null(self::$_instances))
-            self::$_instances = $this;
-
         $this->initializeComponents();
     }
 
@@ -57,9 +54,9 @@ class WAFSystem
      */
     public static function getInstance()
     {
-        if (is_null(self::$_instances)) {
-            throw new \Exception('Error: Object WAFSystem is NULL');
-        }
+        if (is_null(self::$_instances))
+            self::$_instances = new self();
+
         return self::$_instances;
     }
 

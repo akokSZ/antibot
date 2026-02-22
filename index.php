@@ -14,7 +14,7 @@ if (PHP_SAPI !== 'cli') { // не вкл. защиту для CRON и локал
 
         // Инициализация и запуск системы
         try {
-            $antiBot = new \WAFSystem\WAFSystem();
+            $antiBot = \WAFSystem\WAFSystem::getInstance();
             if ($antiBot->enabled) {
                 $antiBot->IFrameChecker->HeaderBlock(); // блокировка отображения в IFrame
 

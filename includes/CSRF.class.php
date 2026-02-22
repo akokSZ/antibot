@@ -9,11 +9,8 @@ class CSRF
     private $expireTime = 600; // время жизни токена
     private $tokenPattern = '/^[a-f0-9]{64}$/'; // Шаблон валидации токена (64 hex-символа)
 
-    public function __construct()
+    private function __construct()
     {
-        if (is_null(self::$_instances))
-            self::$_instances = $this;
-
         if (session_status() !== PHP_SESSION_ACTIVE) {
             throw new \RuntimeException('Session is not active');
         }

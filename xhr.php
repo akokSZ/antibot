@@ -13,12 +13,30 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
 // Инициализация и запуск системы
 try {
-    $antiBot = new \WAFSystem\WAFSystem();
+    $antiBot = \WAFSystem\WAFSystem::getInstance();
 
     $skin = isset($_REQUEST["skin"]) ? $_REQUEST["skin"] : "";
     $skin = preg_replace('/[^a-zA-Z0-9_-]/', '', $skin); // Безопасность
 
     if (!empty($skin)) {
+        // Заменяем CSFR
+        $csfr = \WAFSystem\CSRF::getInstance();
+        try {
+            if (!isset($_REQUEST["csrf"]))
+                throw new \Exception('Error: _REQUEST[csrf] is not set');
+
+            $isCSRF = $csfr->validCSRF($_REQUEST["csrf"], "POST");
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $antiBot->Logger->log($message);
+            $antiBot->GrayList->add($antiBot->Profile->IP, $message);
+
+            header("HTTP/1.1 500 Internal Server Error");
+            exit;
+        }
+
+        $_REQUEST["csrf"] = $csfr->createCSRF();
+
         $skinsDir = 'skins/';
         $skinFile = $skinsDir . $skin . '.php';
 
@@ -40,7 +58,6 @@ try {
         }
     }
 
-    header('Content-type: application/json; charset=utf-8');
     $Api = \WAFSystem\Api::getInstance($antiBot);
 
     // Блокировка плохих запросов
@@ -69,7 +86,7 @@ try {
     }
     $Api->endJSON('fail', ["message" => "`" . $data['func'] . "` not found"]);
 } catch (Exception $e) {
-    error_log("AntiBot system failed: " . $e->getMessage());
+    error_log("AWAF system failed: " . $e->getMessage());
     header("HTTP/1.1 500 Internal Server Error");
     exit;
 }
