@@ -4,9 +4,7 @@ let FINGERPRINT;
  * @param {ID метрики} metrika 
  * @returns 
  */
-function ymc(metrika, ip, fp = "") {
-    
-
+function ymc(metrika, ip) {
     try {
         const originalReferrer = localStorage.getItem('originalReferrer')
             || document.referrer
@@ -14,13 +12,11 @@ function ymc(metrika, ip, fp = "") {
         localStorage.removeItem('originalReferrer');
 
         let params = { ip: ip };
-        if (fp != "")
-            params.fp = fp;
 
         if (typeof ym === 'function') {
             ym(metrika, 'userParams', params); // Передача параметров без иницилиализации
             return;
-        } 
+        }
 
         (function (m, e, t, r, i, k, a) {
             m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
@@ -62,18 +58,18 @@ function callbackMetrika(data) {
     if (data.metrika == "")
         return;
 
+    ymc(data.metrika, data.ip);
+
     if (data.fp) {
         loadScript("js/fp.min.js", callbackFP);
         const intervalId = setInterval(async () => {
             if (FINGERPRINT) {
-                ymc(data.metrika, data.ip, FINGERPRINT);
+                ym(data.metrika, 'params', { fp: FINGERPRINT }); // отправляем доп. параметры
                 clearInterval(intervalId);
             }
         }, 500);
         return;
     }
-
-    ymc(data.metrika, data.ip);
 }
 
 loading("get_param", callbackMetrika);
