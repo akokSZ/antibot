@@ -8,7 +8,7 @@ class Profile
 
     private static $_instances = null;
     private $salt = '';
-    private $languageMap = [    
+    private $languageMap = [
         // Доработать до определения диалектов
         'zh' => 'zh-CN',
         'ru' => 'ru-RU',
@@ -20,6 +20,7 @@ class Profile
     public $Host;
     public $IP;
     public $HttpVersion;
+    public $HttpAccept;
     public $UserAgent;
     public $isIPv6;
     public $Referer;
@@ -38,6 +39,7 @@ class Profile
         $this->Host = isset($_SERVER['HTTP_HOST']) ?  $_SERVER['HTTP_HOST'] : '';
         $this->IP = $HeadProxy->getIPAddr();
         $this->HttpVersion = $HeadProxy->getHttpVersion();
+        $this->HttpAccept = isset($_SERVER['HTTP_ACCEPT']) ? mb_substr($_SERVER['HTTP_ACCEPT'], 0, 2) : '';
         $this->UserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? mb_substr($_SERVER['HTTP_USER_AGENT'], 0, 512) : '';
         $this->Referer = isset($_SERVER['HTTP_REFERER']) ? mb_substr($_SERVER['HTTP_REFERER'], 0, 512) : '';
         $this->REQUEST_URI = isset($_SERVER['REQUEST_URI']) ? mb_substr($_SERVER['REQUEST_URI'], 0, 512) : '';
@@ -84,15 +86,19 @@ class Profile
         throw new \RuntimeException('Не удалось сгенерировать криптографически безопасные данные');
     }
 
-    # генерирует идентификатор пользователя для идентификации в лог-файле
+    /**
+     * Генерирует идентификатор пользователя для лог-файлов и sessid
+     */
     private function getRayID()
     {
-        return substr(md5($this->salt . $this->IP . $this->UserAgent), 0, 16);
+        return substr(md5($this->salt . $this->IP . $this->UserAgent . $this->HttpAccept), 0, 16);
     }
 
-    # генерирует идентификатор пользователя для маркера
+    /**
+     * Генерирует идентификатор пользователя для маркера
+     */
     private function getRayIDSecret()
     {
-        return substr(md5($this->salt . $this->IP . $this->UserAgent), 16);
+        return substr(md5($this->salt . $this->IP . $this->UserAgent . $this->HttpAccept), 16);
     }
 }
