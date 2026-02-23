@@ -30,9 +30,7 @@ try {
             $message = $e->getMessage();
             $antiBot->Logger->log($message);
             $antiBot->GrayList->add($antiBot->Profile->IP, $message);
-
-            header("HTTP/1.1 500 Internal Server Error");
-            exit;
+            $antiBot->Template->showBlockPage();
         }
 
         $_REQUEST["csrf"] = $csfr->createCSRF(); // выдем новый, т.к. страный удален
