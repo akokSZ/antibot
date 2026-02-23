@@ -37,21 +37,4 @@ interface CacheDriverInterface {
      */
     public function isAvailable();
 
-    /**
-     * @param string $ip
-     * @param string|null $hostname null для негативных ответов
-     * @param int $ttl
-     * @return bool
-     */
-    //public function setReverseDns($ip, $hostname, $ttl);
-    
-    /**
-     * @param string $ip
-     * @return string|false|null 
-     *   string - найденный hostname
-     *   null - негативный ответ (hostname не найден)
-     *   false - запись отсутствует в кэше
-     */
-    //public function getReverseDns($ip);
-
 }

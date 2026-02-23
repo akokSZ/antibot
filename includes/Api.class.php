@@ -16,7 +16,7 @@ class Api
     private function __construct(WAFSystem $wafsystem)
     {
         $this->WAFSystem = $wafsystem;
-        $this->CSRF = CSRF::getInstance();
+        $this->CSRF = CSRF::getInstance($this->WAFSystem);
         $client_ip = $this->WAFSystem->Profile->IP;
 
         $input = file_get_contents('php://input');

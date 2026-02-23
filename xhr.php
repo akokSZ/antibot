@@ -20,7 +20,7 @@ try {
 
     if (!empty($skin)) {
         // Заменяем CSFR
-        $csfr = \WAFSystem\CSRF::getInstance();
+        $csfr = \WAFSystem\CSRF::getInstance($antiBot);
         try {
             if (!isset($_REQUEST["csrf"]))
                 throw new \Exception('Error: _REQUEST[csrf] is not set');
@@ -87,6 +87,7 @@ try {
     $Api->endJSON('fail', ["message" => "`" . $data['func'] . "` not found"]);
 } catch (Exception $e) {
     error_log("AWAF system failed: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
     header("HTTP/1.1 500 Internal Server Error");
     exit;
 }

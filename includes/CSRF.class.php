@@ -12,11 +12,7 @@ class CSRF
 
     private function __construct(WAFSystem $wafsystem)
     {
-        $this->SESSION = $wafsystem->SESSION;
-
-        if ($this->SESSION->isStarted()) {
-            throw new \RuntimeException('Session is not active');
-        }
+        $this->SESSION = &$wafsystem->Session->getCursorData();
 
         if (!isset($this->SESSION[$this->csrf_token_key])) {
             $this->SESSION[$this->csrf_token_key] = [];
@@ -37,17 +33,13 @@ class CSRF
         $token = $this->genKey();
         $this->SESSION[$this->csrf_token_key][$token] = [
             'expire' => time() + $this->expireTime,
-            'session_id' => session_id(),
             'created_at' => time()
         ];
-
         return $token;
     }
 
     public function validCSRF($csrf_token, $requestMethod = 'POST')
     {
-        $this->checkSessionAndCookies();
-
         if (strtoupper($requestMethod) === 'GET') {
             throw new \Exception('CSRF-tokens should not be used in GET requests');
         }
@@ -66,11 +58,6 @@ class CSRF
         if ($tokenData['expire'] < time()) {
             unset($this->SESSION[$this->csrf_token_key][$csrf_token]);
             throw new \Exception('Error: CSRF-token expired');
-        }
-
-        if ($tokenData['session_id'] !== session_id()) {
-            unset($this->SESSION[$this->csrf_token_key][$csrf_token]);
-            throw new \Exception('Error: Session mismatch. Possible session hijacking attempt');
         }
 
         // Удаляем токен после успешной проверки
@@ -141,24 +128,6 @@ class CSRF
             if ($data['expire'] < time()) {
                 unset($this->SESSION[$this->csrf_token_key][$token]);
             }
-        }
-    }
-
-    /**
-     * Проверяет активность сессии и поддержку кук
-     * @throws \RuntimeException
-     */
-    private function checkSessionAndCookies()
-    {
-        // Проверка активности сессии
-        if (!$this->SESSION->isStarted()) {
-            throw new \RuntimeException('Session is not active');
-        }
-
-        // Проверка поддержки кук
-        $cookieName = $this->SESSION->session_name();
-        if (empty($_COOKIE[$cookieName])) {
-            throw new \RuntimeException('Cookies are disabled, or session cookie not set');
         }
     }
 }

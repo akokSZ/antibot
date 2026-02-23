@@ -18,6 +18,7 @@ class WAFSystem
     public $Config;
     public $Logger;
     public $Profile;
+    public $Session;
     public $WhiteListIP;
     public $BlackListIP;
     public $UserAgentChecker;
@@ -70,6 +71,12 @@ class WAFSystem
 
         $this->Profile = Profile::getInstance($this->Config);
         $this->Logger = new Logger($this->Config, $this->Profile);
+
+        // Инициализация модуля работы с сессиями
+        $storageDir = $this->Config->CachePath . "sessid/";
+        $this->Session = new \Session\SessidStorage(
+            new \Cache\FileCacheDriver($storageDir)
+        );
 
         $this->GrayList = new GrayList($this->Config, $this->Logger);
         $this->Marker = new Marker($this->Config, $this->Profile, $this->Logger);
