@@ -8,22 +8,25 @@ class CSRF
     private $csrf_token_key = 'csrf_tokens'; // название массива токенов
     private $expireTime = 600; // время жизни токена
     private $tokenPattern = '/^[a-f0-9]{64}$/'; // Шаблон валидации токена (64 hex-символа)
+    private $SESSION;
 
-    private function __construct()
+    private function __construct(WAFSystem $wafsystem)
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        $this->SESSION = $wafsystem->SESSION;
+
+        if ($this->SESSION->isStarted()) {
             throw new \RuntimeException('Session is not active');
         }
 
-        if (!isset($_SESSION[$this->csrf_token_key])) {
-            $_SESSION[$this->csrf_token_key] = [];
+        if (!isset($this->SESSION[$this->csrf_token_key])) {
+            $this->SESSION[$this->csrf_token_key] = [];
         }
     }
 
-    public static function getInstance()
+    public static function getInstance(WAFSystem $wafsystem)
     {
         if (is_null(self::$_instances))
-            self::$_instances = new self();
+            self::$_instances = new self($wafsystem);
 
         return self::$_instances;
     }
@@ -32,7 +35,7 @@ class CSRF
     {
         $this->cleanExpiredTokens(); // Очищаем устаревшие токены
         $token = $this->genKey();
-        $_SESSION[$this->csrf_token_key][$token] = [
+        $this->SESSION[$this->csrf_token_key][$token] = [
             'expire' => time() + $this->expireTime,
             'session_id' => session_id(),
             'created_at' => time()
@@ -54,24 +57,24 @@ class CSRF
             throw new \Exception('Error: Invalid CSRF-token format');
         }
 
-        if (!isset($_SESSION[$this->csrf_token_key][$csrf_token])) {
+        if (!isset($this->SESSION[$this->csrf_token_key][$csrf_token])) {
             throw new \Exception('Error: CSRF-token not found. Possible reasons: cookies disabled, session expired, or token already used');
         }
 
-        $tokenData = $_SESSION[$this->csrf_token_key][$csrf_token];
+        $tokenData = $this->SESSION[$this->csrf_token_key][$csrf_token];
 
         if ($tokenData['expire'] < time()) {
-            unset($_SESSION[$this->csrf_token_key][$csrf_token]);
+            unset($this->SESSION[$this->csrf_token_key][$csrf_token]);
             throw new \Exception('Error: CSRF-token expired');
         }
 
         if ($tokenData['session_id'] !== session_id()) {
-            unset($_SESSION[$this->csrf_token_key][$csrf_token]);
+            unset($this->SESSION[$this->csrf_token_key][$csrf_token]);
             throw new \Exception('Error: Session mismatch. Possible session hijacking attempt');
         }
 
         // Удаляем токен после успешной проверки
-        unset($_SESSION[$this->csrf_token_key][$csrf_token]);
+        unset($this->SESSION[$this->csrf_token_key][$csrf_token]);
         return true;
     }
 
@@ -85,7 +88,7 @@ class CSRF
             throw new \InvalidArgumentException('Invalid token format');
         }
 
-        unset($_SESSION[$this->csrf_token_key][$csrf_token]);
+        unset($this->SESSION[$this->csrf_token_key][$csrf_token]);
         return true;
     }
 
@@ -95,7 +98,7 @@ class CSRF
     public function debugGetTokens()
     {
         $this->cleanExpiredTokens();
-        return $_SESSION[$this->csrf_token_key];
+        return $this->SESSION[$this->csrf_token_key];
     }
 
     # альтернатива random_bytes() для PHP < 7.0.0
@@ -134,9 +137,9 @@ class CSRF
      */
     private function cleanExpiredTokens()
     {
-        foreach ($_SESSION[$this->csrf_token_key] as $token => $data) {
+        foreach ($this->SESSION[$this->csrf_token_key] as $token => $data) {
             if ($data['expire'] < time()) {
-                unset($_SESSION[$this->csrf_token_key][$token]);
+                unset($this->SESSION[$this->csrf_token_key][$token]);
             }
         }
     }
@@ -148,12 +151,13 @@ class CSRF
     private function checkSessionAndCookies()
     {
         // Проверка активности сессии
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if (!$this->SESSION->isStarted()) {
             throw new \RuntimeException('Session is not active');
         }
 
         // Проверка поддержки кук
-        if (empty($_COOKIE[session_name()])) {
+        $cookieName = $this->SESSION->session_name();
+        if (empty($_COOKIE[$cookieName])) {
             throw new \RuntimeException('Cookies are disabled, or session cookie not set');
         }
     }
