@@ -13,10 +13,9 @@ interface CacheDriverInterface {
      * Записать данные в кэш
      * @param string $key
      * @param array $data
-     * @param int $ttl
      * @return bool
      */
-    public function set($key, array $data, $ttl);
+    public function set($key, array $data);
 
     /**
      * Удалить данные из кэша

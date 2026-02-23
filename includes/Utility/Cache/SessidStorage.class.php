@@ -62,7 +62,7 @@ class SessidStorage
         try {
             $this->save();
         } catch (\Exception $e) {
-            throw ('Session save error in destructor: ' . $e->getMessage());
+            error_log('AWSession error: ' . $e->getMessage());
         }
     }
 
@@ -106,8 +106,7 @@ class SessidStorage
             throw new \RuntimeException('Session not started');
         }
 
-        // TTL = 0 означает бессрочное хранение (насколько позволяет драйвер)
-        $result = $this->cacheDriver->set($this->sessionId, $this->data, 0);
+        $result = $this->cacheDriver->set($this->sessionId, $this->data);
 
         if (!$result) {
             throw new \RuntimeException('Failed to save session data');
