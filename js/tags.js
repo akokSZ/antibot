@@ -32,7 +32,7 @@ function loading(func, callback) {
     let xhr = new XMLHttpRequest();
 
     let obj = {
-        func: func == undefined ? 'csrf_token' : func,
+        func: func,
         csrf_token: CSRF,
     };
 
@@ -52,10 +52,7 @@ function loading(func, callback) {
             CSRF = data.csrf_token;
             // console.log(data);
 
-            if (data.func == 'csrf_token') {
-                loading("load_module");
-            }
-            else if (data.func == 'load_module') {
+            if (data.func == 'load_module') {
                 if (data.modules != undefined) {
                     data.modules.forEach(element => {
                         loadScript("js/" + element + ".js");
@@ -80,5 +77,5 @@ function loading(func, callback) {
 }
 
 const HTTP_ANTIBOT_PATH = getScriptPath();
-loading();
+loading("load_module");
 

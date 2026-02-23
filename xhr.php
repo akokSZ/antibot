@@ -35,7 +35,7 @@ try {
             exit;
         }
 
-        $_REQUEST["csrf"] = $csfr->createCSRF();
+        $_REQUEST["csrf"] = $csfr->createCSRF(); // выдем новый, т.к. страный удален
 
         $skinsDir = 'skins/';
         $skinFile = $skinsDir . $skin . '.php';

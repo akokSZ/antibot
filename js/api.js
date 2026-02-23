@@ -1,7 +1,6 @@
 let FINGERPRINT = '';
 let FRAME_RATE = 0;
 let IS_LOAD = {}; // готовность всех модулей
-var CSRF = '';
 
 /*
 function isWebWorkerSupported() {
@@ -264,7 +263,7 @@ function checkBot(func) {
 	var visitortime = new Date();
 
 	let obj = {
-		func: func == undefined ? 'csrf_token' : func,
+		func: func,
 		csrf_token: CSRF,
 	};
 
@@ -314,9 +313,7 @@ function checkBot(func) {
 			var data = JSON.parse(xhr.responseText);
 			CSRF = data.csrf_token;
 
-			if (data.func == 'csrf_token') {
-				loadModules();
-			} else if (data.status == 'captcha') {
+			if (data.status == 'captcha') {
 				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
 			} else if (data.status == 'allow') {
@@ -376,5 +373,5 @@ if (!сheckCookie()) {
 		}
 	}, 500);
 
-	checkBot();
+	loadModules();
 }

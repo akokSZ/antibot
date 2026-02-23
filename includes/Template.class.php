@@ -45,6 +45,7 @@ class Template
         
         $this->Logger->log("Displaying the verification page");
 
+        $wafsystem = \WAFSystem\WAFSystem::getInstance();
         require $this->Config->BasePath . "templates/template.inc.php";
         exit;
     }

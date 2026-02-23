@@ -43,14 +43,23 @@ class Api
             $this->endJSON('fail');
         }
 
-        // Получение csrf_token
-        if ($this->data['func'] == "csrf_token") {
-            $this->endJSON('csrf_token');
-        }
-
         if (!isset($this->data['csrf_token'])) {
             $this->WAFSystem->Logger->log("Error: Param 'csrf_token' not found");
             $this->endJSON('fail');
+        }
+
+        if ($this->data['func'] == "load_module") { 
+            $this->endJSON("no_csrf", [ // доступ без csrf
+                "modules" => ["metrika"]
+            ]);
+        }
+
+        if ($this->data['func'] == "get_param") { 
+            $this->endJSON("no_csrf", [ // доступ без csrf
+                "metrika" => \WAFSystem\Metrika::getInstance($this->WAFSystem)->get("ID"),
+                "ip" => $this->WAFSystem->Profile->IP,
+                "fp" => $this->WAFSystem->FingerPrint->enabled
+            ]);
         }
 
         try {
@@ -60,20 +69,6 @@ class Api
             $this->WAFSystem->Logger->log($message, [static::class]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail', ['message' => $message]);
-        }
-
-        if ($this->data['func'] == "load_module") {
-            $this->endJSON("ok", [
-                "modules" => ["metrika"]
-            ]);
-        }
-
-        if ($this->data['func'] == "get_param") {
-            $this->endJSON("ok", [
-                "metrika" => \WAFSystem\Metrika::getInstance($this->WAFSystem)->get("ID"),
-                "ip" => $this->WAFSystem->Profile->IP,
-                "fp" => $this->WAFSystem->FingerPrint->enabled
-            ]);
         }
     }
 
@@ -106,7 +101,7 @@ class Api
             $this->removeHiddenValue();
         }
 
-        if ($status != 'fail') {
+        if ($status != 'fail' && $status != 'no_csrf') { // не выдавать ключь для ошибки или данных без ключа
             $csrf_token = $this->CSRF->createCSRF();
         }
 
