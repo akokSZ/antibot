@@ -4,6 +4,8 @@ namespace WAFSystem;
 
 class Marker
 {
+    const COOKIE_PREF = 'aw_';
+
     private $Config;
     private $profile;
     private $logger;
@@ -44,16 +46,16 @@ class Marker
         if ($time == null)
             $time = time() + $this->expireDays * 86400;
 
-        $cookie_value = $this->profile->genKey();
+        $cookie_value = $this->profile->RayID;
         if (version_compare(PHP_VERSION, '7.3.0') >= 0) {
-            setcookie($this->profile->RayIDSecret, $cookie_value, [
+            setcookie(self::COOKIE_PREF . $this->profile->RayIDSecret, $cookie_value, [
                 'expires' => $time,
                 'path' => '/',
                 'httponly' => true,
                 'secure' => isset($_SERVER['HTTPS'])
             ]);
         } else {
-            setcookie($this->profile->RayIDSecret, $cookie_value, time() + $this->expireDays * 24 * 3600, "/");
+            setcookie(self::COOKIE_PREF . $this->profile->RayIDSecret, $cookie_value, time() + $this->expireDays * 24 * 3600, "/");
         }
         $this->logger->logMessage("Tag set");
         $this->genNameMarker();
@@ -66,7 +68,7 @@ class Marker
 
     function isValid()
     {
-        if (isset($_COOKIE[$this->profile->RayIDSecret])) {
+        if (isset($_COOKIE[self::COOKIE_PREF . $this->profile->RayIDSecret])) {
             return true;
         }
         return false;
