@@ -28,7 +28,7 @@ try {
             $isCSRF = $csfr->validCSRF($_REQUEST["csrf"], "POST");
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $antiBot->Logger->log($message);
+            $antiBot->Logger->log($message, [$_POST]);
             $antiBot->GrayList->add($antiBot->Profile->IP, $message);
             $antiBot->Template->showBlockPage();
         }
