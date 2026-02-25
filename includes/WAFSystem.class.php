@@ -247,6 +247,11 @@ class WAFSystem
                 $this->Marker->set();
                 return true;
             }
+            if ($this->RefererAllow->Checking($this->Profile->Referer)) {
+                $this->Logger->log("HTTP_REFERER allowed");
+                $this->Marker->set();
+                return true;
+            }
         }
 
         # Проверка User-Agent
