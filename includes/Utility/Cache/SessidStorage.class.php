@@ -83,6 +83,30 @@ class SessidStorage
     }
 
     /**
+     * Устанавливает значение по аналогии с куками
+     */
+    public function set($key, $value, $ttl)
+    {
+        $this->data[$key] = [
+            'value' => $value,
+            'expire' => time() + $ttl,
+            'created_at' => time()
+        ];
+    }
+
+    /**
+     * Возвращает значение, если не истек срок хранения
+     */
+    public function get($key)
+    {
+        if (isset($this->data[$key]["expire"]) && $this->data[$key]["expire"] < time()) {
+            $this->delete($key);
+            return null;
+        }
+        return $this->data[$key]["value"];
+    }
+
+    /**
      * Удалить значение из сессии
      * 
      * @param string $key

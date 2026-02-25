@@ -19,6 +19,7 @@ class WAFSystem
     public $Logger;
     public $Profile;
     public $Session;
+    
     public $WhiteListIP;
     public $BlackListIP;
     public $UserAgentChecker;
