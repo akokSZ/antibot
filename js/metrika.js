@@ -14,7 +14,7 @@ function ymc(metrika, ip) {
         let params = { ip: ip };
 
         if (typeof ym === 'function') {
-            ym(metrika, 'userParams', params); // Передача параметров без иницилиализации
+            ym(metrika, 'params', params); // Передача параметров без иницилиализации
             return;
         }
 
