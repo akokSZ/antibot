@@ -66,7 +66,7 @@ class Api
             $this->CSRF->validCSRF($this->data['csrf_token'], $_SERVER['REQUEST_METHOD']);
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $this->WAFSystem->Logger->log($message, [static::class, $_POST]);
+            $this->WAFSystem->Logger->log($message, [static::class, "POST" => $_POST]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail', ['message' => $message]);
         }
