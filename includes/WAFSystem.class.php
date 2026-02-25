@@ -112,11 +112,11 @@ class WAFSystem
     {
         try {
             if (!$this->isAllowed()) {
-                $this->Template->showCaptcha();
+                $this->Template->showVerificationPage();
             }
         } catch (\Exception $e) {
             $this->Logger->log("System error: " . $e->getMessage());
-            $this->Template->showCaptcha();
+            $this->Template->showVerificationPage();
         }
     }
 
