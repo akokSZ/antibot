@@ -512,10 +512,10 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
         function loadModules() {
             <?
             $antibot = \WAFSystem\WAFSystem::getInstance();
-            echo $antibot->FingerPrint->enabled ? "loadScript('js/fp.min.js', initFingerPrint);" : '';
-            echo $antibot->FPSChecker->enabled ? "loadScript('js/frame_rate.js', callbackFrameRate);" : '';
+            echo $antibot->FingerPrint->enabled ? "loadScript('js/fp.min.js?" . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . "js/fp.min.js") . "', initFingerPrint);" : '';
+            echo $antibot->FPSChecker->enabled ? "loadScript('js/frame_rate.js?" . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . "js/frame_rate.js") . "', callbackFrameRate);" : '';
             ?>
-            
+
         }
 
         (function() {
@@ -539,7 +539,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
             var cpoLang = document.createElement('script');
             cpoLang.src = '<?= $this->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpoLang);
-            
+
             var cpo = document.createElement('script');
             cpo.src = '<?= $this->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpo);
