@@ -25,10 +25,10 @@ try {
             if (!isset($_REQUEST["csrf"]))
                 throw new \Exception('Error: _REQUEST[csrf] is not set');
 
-            $isCSRF = $csfr->validCSRF($_REQUEST["csrf"], "POST");
+            $isCSRF = $csfr->validCSRF($_REQUEST["csrf"]);
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $antiBot->Logger->log($message, ["_POST" => $_POST]);
+            $antiBot->Logger->log($message, ["_REQUEST" => $_REQUEST]);
             $antiBot->GrayList->add($antiBot->Profile->IP, $message);
             $antiBot->Template->showBlockPage();
         }
@@ -57,14 +57,6 @@ try {
     }
 
     $Api = \WAFSystem\Api::getInstance($antiBot);
-
-    // Блокировка плохих запросов
-    if (!$Api->isPost()) {
-        $antiBot->Logger->log("Not a POST request");
-        $antiBot->BlackListIP->add($antiBot->Profile->IP, 'Not a POST request');
-        $Api->endJSON('block');
-    }
-
     $data = $Api->getData();
 
     // Проверка браузера

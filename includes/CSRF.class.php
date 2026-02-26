@@ -38,12 +38,8 @@ class CSRF
         return $token;
     }
 
-    public function validCSRF($csrf_token, $requestMethod = 'POST')
+    public function validCSRF($csrf_token)
     {
-        if (strtoupper($requestMethod) === 'GET') {
-            throw new \Exception('CSRF-tokens should not be used in GET requests');
-        }
-
         // Проверка формата (64 hex-символа для 32 байт)
         if (!preg_match($this->tokenPattern, $csrf_token)) {
             throw new \Exception('Error: Invalid CSRF-token format');

@@ -19,6 +19,12 @@ class Api
         $this->CSRF = CSRF::getInstance($this->WAFSystem);
         $client_ip = $this->WAFSystem->Profile->IP;
 
+        // Блокировка плохих запросов
+        if (!$this->isPost()) {
+            $this->WAFSystem->Logger->log("Not a POST request");
+            $this->endJSON('block');
+        }
+
         $input = file_get_contents('php://input');
         if (($len = strlen($input)) > $this->maxData) {
             $message = "Error: Input data size exceeded (size: $len, max: $this->maxData)";
@@ -30,14 +36,14 @@ class Api
         $this->data = json_decode($input, true);
 
         if (empty($this->data)) {
-            $message = "Error: Data is empty";
+            $message = "Error: JSON-data is empty";
             $this->WAFSystem->Logger->log($message, [static::class]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail');
         }
 
         if (!isset($this->data['func'])) {
-            $message = "Error: Value 'func' is not set";
+            $message = "Error: Param 'func' not found";
             $this->WAFSystem->Logger->log($message, [static::class]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail');
@@ -48,13 +54,13 @@ class Api
             $this->endJSON('fail');
         }
 
-        if ($this->data['func'] == "load_module") { 
+        if ($this->data['func'] == "load_module") {
             $this->endJSON("no_csrf", [ // доступ без csrf
                 "modules" => ["metrika"]
             ]);
         }
 
-        if ($this->data['func'] == "get_param") { 
+        if ($this->data['func'] == "get_param") {
             $this->endJSON("no_csrf", [ // доступ без csrf
                 "metrika" => \WAFSystem\Metrika::getInstance($this->WAFSystem)->get("ID"),
                 "ip" => $this->WAFSystem->Profile->IP,
@@ -63,10 +69,10 @@ class Api
         }
 
         try {
-            $this->CSRF->validCSRF($this->data['csrf_token'], $_SERVER['REQUEST_METHOD']);
+            $this->CSRF->validCSRF($this->data['csrf_token']);
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $this->WAFSystem->Logger->log($message, [static::class, "POST" => $_POST]);
+            $this->WAFSystem->Logger->log($message, [static::class, $this->data]);
             $this->WAFSystem->GrayList->add($client_ip, $message);
             $this->endJSON('fail', ['message' => $message]);
         }
@@ -99,6 +105,10 @@ class Api
 
         if ($status == 'allow') {
             $this->removeHiddenValue();
+        }
+
+        if ($status == 'block') {
+            header("HTTP/1.0 403 Forbidden");
         }
 
         if ($status != 'fail' && $status != 'no_csrf') { // не выдавать ключь для ошибки или данных без ключа
