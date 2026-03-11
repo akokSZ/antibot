@@ -120,6 +120,7 @@ class WAFSystem
         }
     }
 
+    // Вызывается ДО загрузки проверочной страницы
     private function isAllowed()
     {
         $clientIp = $this->Profile->IP;
@@ -334,6 +335,7 @@ class WAFSystem
         return false;
     }
 
+    // Вызывается ПОСЛЕ загрузки проверочной страницы
     public function isAllowed2($Api)
     {
         # Проверка куки маркера
