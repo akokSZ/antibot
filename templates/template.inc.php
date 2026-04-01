@@ -450,7 +450,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
 <body class="no-js">
     <div class="main-wrapper" role="main">
         <div class="main-content">
-            <h1 class="zone-name-title h1"><?= $_SERVER['SERVER_NAME'] ?></h1>
+            <h1 class="zone-name-title h1"><?= $this->Config->SERVER_NAME_NORMALIZE ?></h1>
             <p id="pSht7" class="h2 spacer-bottom" data-translate="checking_human">Проверяем, человек ли вы. Это может занять несколько секунд.</p>
             <div id="uHkM6" style="display: none;">
             </div>
@@ -462,11 +462,11 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                     <div></div>
                 </div>
             </div>
-            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?= $_SERVER['SERVER_NAME'] ?> необходимо проверить безопасность
+            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?= $this->Config->SERVER_NAME_NORMALIZE ?> необходимо проверить безопасность
                 вашего подключения.</div>
             <div id="tWuBw3" style="display: none;">
                 <div id="challenge-success-text" class="h2" data-translate="success_text">Проверка выполнена успешно</div>
-                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?= $_SERVER['SERVER_NAME'] ?>...</div>
+                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?= $this->Config->SERVER_NAME_NORMALIZE ?>...</div>
             </div><noscript>
                 <div class="h2"><span id="challenge-error-text" data-translate="enable_js">Enable JavaScript and cookies to continue</span></div>
             </noscript>
@@ -529,7 +529,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                             const img = document.createElement('img');
                             img.src = '/favicon.ico';
                             img.className = 'heading-favicon';
-                            img.alt = 'Icon <?= $_SERVER['SERVER_NAME'] ?>';
+                            img.alt = 'Icon <?= $this->Config->SERVER_NAME_NORMALIZE ?>';
                             h1.insertBefore(img, h1.firstChild);
                         }
                     })
