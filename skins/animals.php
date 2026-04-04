@@ -3,6 +3,21 @@ $nonce = \Utility\GenerateRandomName::genKey(17);
 $funcName = \Utility\GenerateRandomName::genFuncName();
 $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 
+$langMap = [
+  "ru" => [
+      "title" => "Проверяем ваш Браузер...",
+      "exercise" => "Найдите такой же рисунок:",
+  ],
+  "en" => [
+      "title" => "Checking your Browser...",
+      "exercise" => "Find the same picture:",
+  ],
+  "zh" => [
+      "title" => "正在检查您的浏览器...",
+      "exercise" => "找到相同的图片",
+  ],
+];
+
 // Путь к папке с картинками
 $scriptDir = dirname($_SERVER['SCRIPT_FILENAME']);
 $skinPathRelative = '/skins/animals/';
@@ -83,7 +98,7 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
   <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
   <meta http-equiv="content-security-policy"
     content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-  <title>Проверка...</title>
+  <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
   <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <style>
@@ -359,7 +374,7 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
 <body>
   <div class="captcha-container">
     <div class="question">
-      <div class="question-text">Найдите такой же рисунок:</div>
+      <div class="question-text"><?= $langMap[$antiBot->Profile->Language]['exercise'] ?></div>
       <?php if (!$useImages): ?>
         <div class="target-emoji"><?= $targetEmoji ?></div>
       <?php else: ?>
@@ -491,7 +506,6 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
         if (selectedEmoji === targetEmoji) {
           // Правильный ответ
           element.classList.add('correct');
-          showMessage('✓ Проверка пройдена!', 'success');
           container.classList.add('disabled');
 
           // Отправляем успех
@@ -499,25 +513,11 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
         } else {
           // Неправильный ответ
           element.classList.add('wrong');
-          showMessage('Неправильно, попробуйте еще раз', 'error');
 
           setTimeout(() => {
             element.classList.remove('wrong');
           }, 300);
         }
-      }
-
-      function showMessage(text, type) {
-        messageDiv.textContent = text;
-        messageDiv.className = `message ${type}`;
-        messageDiv.style.display = 'block';
-
-        setTimeout(() => {
-          if (messageDiv.className === `message ${type}`) {
-            messageDiv.style.display = 'none';
-            messageDiv.className = 'message';
-          }
-        }, 2000);
       }
 
       let CSRF = "<?= $_REQUEST["csrf"] ?>";
