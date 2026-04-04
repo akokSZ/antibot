@@ -6,7 +6,6 @@ namespace WAFSystem;
 class Template
 {
     private $Config;
-    private $Profile;
     private $Logger;
     private $metrika = '101475381'; // метрика AWAF
     private $utm_referrer = false;
@@ -16,7 +15,6 @@ class Template
     public function __construct(Config $config, Profile $profile, Logger $logger)
     {
         $this->Config = $config;
-        $this->Profile = $profile;
         $this->Logger = $logger;
 
         $this->Config->init('main', 'header404', false, 'отдает на заглушку 404 заголовок');        
@@ -45,7 +43,6 @@ class Template
         
         $this->Logger->log("Displaying the verification page");
 
-        $wafsystem = \WAFSystem\WAFSystem::getInstance();
         require $this->Config->BasePath . "templates/template.inc.php";
         exit;
     }

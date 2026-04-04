@@ -31,6 +31,7 @@ class Config
         $this->HTTP_HOST = getenv("HTTP_HOST");
         $this->SERVER_NAME = $_SERVER['SERVER_NAME'];
         $this->SERVER_NAME_NORMALIZE = \Utility\Domain::normalizeDomain($this->SERVER_NAME);
+        
         if (isset($_SERVER['HTTPS'])) {
             $this->HTTPS =  $_SERVER['HTTPS'] === 'on' ? true : false;
         } else {

@@ -1,6 +1,7 @@
 <?
 $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
-?><html lang="<?= $this->Profile->LangAttr ?>" dir="ltr">
+$wafsystem = \WAFSystem\WAFSystem::getInstance();
+?><html lang="<?= $wafsystem->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -450,7 +451,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
 <body class="no-js">
     <div class="main-wrapper" role="main">
         <div class="main-content">
-            <h1 class="zone-name-title h1"><?= $this->Config->SERVER_NAME_NORMALIZE ?></h1>
+            <h1 class="zone-name-title h1"><?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?></h1>
             <p id="pSht7" class="h2 spacer-bottom" data-translate="checking_human">Проверяем, человек ли вы. Это может занять несколько секунд.</p>
             <div id="uHkM6" style="display: none;">
             </div>
@@ -462,20 +463,20 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                     <div></div>
                 </div>
             </div>
-            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?= $this->Config->SERVER_NAME_NORMALIZE ?> необходимо проверить безопасность
+            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?> необходимо проверить безопасность
                 вашего подключения.</div>
             <div id="tWuBw3" style="display: none;">
                 <div id="challenge-success-text" class="h2" data-translate="success_text">Проверка выполнена успешно</div>
-                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?= $this->Config->SERVER_NAME_NORMALIZE ?>...</div>
+                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?>...</div>
             </div><noscript>
                 <div class="h2"><span id="challenge-error-text" data-translate="enable_js">Enable JavaScript and cookies to continue</span></div>
             </noscript>
         </div>
     </div>
     <script type="text/javascript">
-        var HTTP_ANTIBOT_PATH = '<?= $this->Config->ANTIBOT_PATH; ?>';
+        var HTTP_ANTIBOT_PATH = '<?= $wafsystem->Config->ANTIBOT_PATH; ?>';
         var METRIKA_ID = '<?= $this->metrika; ?>';
-        var REMOTE_ADDR = '<?= $this->Profile->IP; ?>';
+        var REMOTE_ADDR = '<?= $wafsystem->Profile->IP; ?>';
         var UTM_REFERRER = '<?= $this->utm_referrer; ?>';
         var SAVE_REFERER = '<?= $this->save_referer; ?>';
         var CSRF = '<?= WAFSystem\CSRF::getInstance($wafsystem)->createCSRF() ?>';
@@ -515,11 +516,9 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
 
         function loadModules() {
             <?
-            $antibot = \WAFSystem\WAFSystem::getInstance();
-            echo $antibot->FingerPrint->enabled ? "loadScript('js/fp.min.js?" . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . "js/fp.min.js") . "', initFingerPrint);" : '';
-            echo $antibot->FPSChecker->enabled ? "loadScript('js/frame_rate.js?" . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . "js/frame_rate.js") . "', callbackFrameRate);" : '';
+            echo $wafsystem->FingerPrint->enabled ? "loadScript('js/fp.min.js?" . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . "js/fp.min.js") . "', initFingerPrint);" : '';
+            echo $wafsystem->FPSChecker->enabled ? "loadScript('js/frame_rate.js?" . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . "js/frame_rate.js") . "', callbackFrameRate);" : '';
             ?>
-
         }
 
         (function() {
@@ -533,7 +532,7 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                             const img = document.createElement('img');
                             img.src = '/favicon.ico';
                             img.className = 'heading-favicon';
-                            img.alt = 'Icon <?= $this->Config->SERVER_NAME_NORMALIZE ?>';
+                            img.alt = 'Icon <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?>';
                             h1.insertBefore(img, h1.firstChild);
                         }
                     })
@@ -541,18 +540,18 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
             }, 0);
 
             var cpoLang = document.createElement('script');
-            cpoLang.src = '<?= $this->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
+            cpoLang.src = '<?= $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpoLang);
 
             var cpo = document.createElement('script');
-            cpo.src = '<?= $this->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($this->Config->DOCUMENT_ROOT . $this->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
+            cpo.src = '<?= $wafsystem->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpo);
         }());
     </script>
     <div class="footer" role="contentinfo">
         <div class="footer-inner">
             <div class="clearfix diagnostic-wrapper">
-                <div class="ray-id">Ray ID: <code><?= $this->Profile->RayID; ?></code></div>
+                <div class="ray-id">Ray ID: <code><?= $wafsystem->Profile->RayID; ?></code></div>
             </div>
             <div class="text-center" id="footer-text"><span data-translate="performance_security">Производительность и безопасность на платформе</span> <a
                     rel="noopener noreferer" href="https://github.com/githubniko/antibot"
