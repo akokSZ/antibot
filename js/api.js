@@ -2,35 +2,6 @@ let FINGERPRINT = '';
 let FRAME_RATE = 0;
 let IS_LOAD = {}; // готовность всех модулей
 
-/*
-function isWebWorkerSupported() {
-	return typeof Worker !== 'undefined';
-}
-
-let workerCount = 0;
-function createWorker(countEnd) {
-	countEnd = (countEnd == undefined) ? 10:countEnd;
-	try {
-		const worker = new Worker('benchmark.js');
-		worker.postMessage('start');
-		workerCount++;
-		console.log(`Worker ${workerCount} started`);
-		if(countEnd < workerCount) 
-			createWorker();
-	} catch (error) {
-		console.error(`Failed to create Worker ${workerCount + 1}:`, error);
-		console.log(`Maximum workers supported: ${workerCount}`);
-	}
-}
-
-function startBanchmark() {
-	if (isWebWorkerSupported()) {
-		createWorker();
-	} else {
-		console.error('Web Workers are not supported in this browser.');
-	}
-}
-*/
 
 function refresh() {
 	flagCloseWindow = false;
@@ -92,6 +63,11 @@ function callbackFrameRate() {
 		console.error(callback + 'FrameRateJS no load');
 	}
 
+}
+
+function benchmark()
+{
+	loadScript('js/benchmark.js', function() { startBenchmark(); });
 }
 
 function getObjectBrowser(obj, options = {}) {
@@ -325,7 +301,6 @@ function checkBot(func) {
 			CSRF = data.csrf_token;
 
 			if (data.status == 'captcha') {
-				// loadScript('js/benchmark.js', null);
 				displayCaptcha();
 			} else if (data.status == 'allow') {
 				allow();
@@ -335,7 +310,10 @@ function checkBot(func) {
 				setTimeout(refresh, 1000);
 			} else if (data.status == 'fail') {
 				console.log(data);
-			} else {
+			} else if (data.status == 'benchmark') {
+				setTimeout(benchmark, 1000);
+			}
+			else {
 				console.log(data);
 			}
 		} else {

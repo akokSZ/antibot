@@ -15,7 +15,7 @@ class FPSChecker
     {
         $this->Logger = $logger;
         $this->enabled = $config->init($this->modulName, 'enabled', $this->enabled, 'проверка FPS девайсов');
-        $this->action = $config->init($this->modulName, 'action', $this->action, 'CAPTCHA - капча, BLOCK - заблокировать, SKIP - ничего не делать');
+        $this->action = $config->init($this->modulName, 'action', $this->action, 'CAPTCHA - капча, BLOCK - заблокировать, SKIP - ничего не делать, BENCHMARK - проверяет бота на толщину');
         $this->fps = $config->init($this->modulName, 'fps', $this->fps, 'минимальная частота кадров');
     }
 

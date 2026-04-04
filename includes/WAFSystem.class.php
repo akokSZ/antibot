@@ -515,6 +515,11 @@ class WAFSystem
                     $this->Logger->log("FPS value is below the set value");
                     $Api->endJSON('captcha');
                 }
+            } else if ($this->FPSChecker->action == 'BENCHMARK') {
+                if ($this->FPSChecker->Checking($this->Profile->FPS)) {
+                    $this->Logger->log("FPS value is below the set value");
+                    $Api->endJSON('benchmark');
+                }
             }
         }
 

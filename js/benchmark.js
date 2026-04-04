@@ -1,6 +1,6 @@
 self.onmessage = function (event) {
     if (event.data === 'start') {
-        console.log('Banchmark started');
+        console.log('Benchmark started');
         const memoryHog = [];
         let allocatedMB = 0;
 
@@ -18,3 +18,31 @@ self.onmessage = function (event) {
         allocateChunk();
     }
 };
+
+function isWebWorkerSupported() {
+	return typeof Worker !== 'undefined';
+}
+
+let workerCount = 10;
+let countEnd = 10;
+function createWorker() {
+	try {
+		const worker = new Worker('benchmark.js');
+		worker.postMessage('start');
+		workerCount++;
+		console.log(`Worker ${workerCount} started`);
+		if(countEnd < workerCount) 
+			createWorker();
+	} catch (error) {
+		console.error(`Failed to create Worker ${workerCount + 1}:`, error);
+		console.log(`Maximum workers supported: ${workerCount}`);
+	}
+}
+
+function startBenchmark() {
+	if (isWebWorkerSupported()) {
+		createWorker();
+	} else {
+		console.error('Web Workers are not supported in this browser.');
+	}
+}
