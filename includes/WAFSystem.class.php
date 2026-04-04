@@ -518,6 +518,7 @@ class WAFSystem
             } else if ($this->FPSChecker->action == 'BENCHMARK') {
                 if ($this->FPSChecker->Checking($this->Profile->FPS)) {
                     $this->Logger->log("FPS value is below the set value");
+                    $this->Logger->log("BenchMark");
                     $Api->endJSON('benchmark');
                 }
             }
