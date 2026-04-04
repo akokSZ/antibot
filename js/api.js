@@ -37,6 +37,7 @@ function refresh() {
 
 	const currentUrl = new URL(window.location.href);
 	const ref = document.referrer || 'direct';
+	let needReload = false;
 
 	if (SAVE_REFERER) {
 		localStorage.setItem('originalReferrer', ref);
@@ -50,10 +51,20 @@ function refresh() {
 		// Добавляем ref, только если его ещё нет
 		if (!currentUrl.searchParams.has('utm_referrer')) {
 			currentUrl.searchParams.set('utm_referrer', encodeURIComponent(ref));
+			needReload = true;
 		}
 	}
 
-	window.location.href = currentUrl.toString();
+	if (needReload) {
+		window.location.href = currentUrl.toString();
+		// Фолбэк: если перезагрузки не произошло (из-за якоря)
+		setTimeout(() => {
+			if (window.location.href === currentUrl.toString()) {
+				window.location.reload();
+			}
+		}, 100);
+	} else
+		window.location.reload();
 }
 
 function initFingerPrint() {
@@ -292,7 +303,7 @@ function checkBot(func) {
 			isBas: isBas(),
 			isFrame: window.top === window.self,
 			frameRate: FRAME_RATE,
-			
+
 		};
 		Object.assign(obj, obj2);
 	}
