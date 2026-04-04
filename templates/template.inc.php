@@ -493,13 +493,17 @@ $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
                 spinnerNone();
                 form.style.cssText = "";
                 head2.textContent = lang['confirm_human'];
+
+                // устанавливаем высоту iframe
+                const height = iframe.contentWindow.document.documentElement.scrollHeight;
+                iframe.style.height = height + 'px';
             }
             iframe.allow = "cross-origin-isolated; fullscreen; autoplay";
             iframe.sandbox = "allow-same-origin allow-scripts allow-popups";
             iframe.id = "<?= $tagID ?>";
             iframe.tabindex = 0;
             iframe.title = lang['widget_action'];
-            iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; min-height:200px;";
+            iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; ";
             iframe.scrolling = "no";
             iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?= $this->getSkinCaptcha() ?>&csrf=" + CSRF;
 
