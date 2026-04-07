@@ -61,7 +61,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/antibot/index.php';
 ```
 или в .htaccess
 ```
-php_value auto_prepend_file ".../antibot/index.php"
+php_value auto_prepend_file "<путь_до_каталога>/antibot/index.php"
 ```
 
 7. Проверьте работу сайта
