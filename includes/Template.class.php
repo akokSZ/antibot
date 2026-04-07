@@ -8,8 +8,8 @@ class Template
     private $Config;
     private $Logger;
     private $metrika = '101475381'; // метрика AWAF
-    private $utm_referrer = false;
-    private $save_referer = false;
+    private $utm_referrer = true;
+    private $save_referer = true;
     private $skin_captcha = "checkbox";
 
     public function __construct(Config $config, Profile $profile, Logger $logger)
