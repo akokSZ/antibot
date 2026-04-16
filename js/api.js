@@ -45,6 +45,10 @@ function initFingerPrint() {
 			.then(result => {
 				FINGERPRINT = result.visitorId;
 				IS_LOAD["initFingerPrint"] = true;
+
+				if (METRIKA_ID != '') {
+					ym(METRIKA_ID, 'params', { fp: FINGERPRINT }); // отправляем доп. параметры
+				}
 			});
 
 	} else {
@@ -65,9 +69,8 @@ function callbackFrameRate() {
 
 }
 
-function benchmark()
-{
-	loadScript('js/benchmark.js', function() { startBenchmark(); });
+function benchmark() {
+	loadScript('js/benchmark.js', function () { startBenchmark(); });
 }
 
 function getObjectBrowser(obj, options = {}) {
