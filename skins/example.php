@@ -17,13 +17,13 @@ $langMap = [
         "checking_human" => "请确认您是人类",
     ],
 ];
-?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
+?><html lang="<?php echo $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
     <meta http-equiv="content-security-policy"
-        content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-    <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
+        content="default-src 'none'; script-src 'nonce-<?php echo $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
+    <title><?php echo $langMap[$antiBot->Profile->Language]['title'] ?></title>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -36,19 +36,19 @@ $langMap = [
 </head>
 
 <body>
-    <label><input type="checkbox" id="<?= $tagCheckbox ?>"><?= $langMap[$antiBot->Profile->Language]['checking_human'] ?></label>
-    <script type="text/javascript" nonce="<?= $nonce ?>">
-        let CSRF = "<?= $_REQUEST["csrf"] ?>";
-        var HTTP_ANTIBOT_PATH = '<?= $antiBot->Config->ANTIBOT_PATH; ?>';
+    <label><input type="checkbox" id="<?php echo $tagCheckbox ?>"><?php echo $langMap[$antiBot->Profile->Language]['checking_human'] ?></label>
+    <script type="text/javascript" nonce="<?php echo $nonce ?>">
+        let CSRF = "<?php echo $_REQUEST["csrf"] ?>";
+        var HTTP_ANTIBOT_PATH = '<?php echo $antiBot->Config->ANTIBOT_PATH; ?>';
 
-        const input = document.getElementById("<?= $tagCheckbox ?>");
+        const input = document.getElementById("<?php echo $tagCheckbox ?>");
         input.addEventListener('click', function(event) {
             if (this.checked) {
-                <?= $funcName ?>('<?= $antiBot->Marker->getNameMarker() ?>');
+                <?php echo $funcName ?>('<?php echo $antiBot->Marker->getNameMarker() ?>');
             }
         });
 
-        function <?= $funcName ?>(func) {
+        function <?php echo $funcName ?>(func) {
             var xhr = new XMLHttpRequest();
             var visitortime = new Date();
 

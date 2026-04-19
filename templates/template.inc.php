@@ -1,7 +1,7 @@
 <?
 $tagID = Utility\GenerateRandomName::genFuncName(4, 6);
 $wafsystem = \WAFSystem\WAFSystem::getInstance();
-?><html lang="<?= $wafsystem->Profile->LangAttr ?>" dir="ltr">
+?><html lang="<?php echo $wafsystem->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -451,7 +451,7 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
 <body class="no-js">
     <div class="main-wrapper" role="main">
         <div class="main-content">
-            <h1 class="zone-name-title h1"><?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?></h1>
+            <h1 class="zone-name-title h1"><?php echo $wafsystem->Config->SERVER_NAME_NORMALIZE ?></h1>
             <p id="pSht7" class="h2 spacer-bottom" data-translate="checking_human">Проверяем, человек ли вы. Это может занять несколько секунд.</p>
             <div id="uHkM6" style="display: none;">
             </div>
@@ -463,23 +463,23 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
                     <div></div>
                 </div>
             </div>
-            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?> необходимо проверить безопасность
+            <div id="LfAMd3" class="core-msg spacer spacer-top" data-translate="security_check">Сначала <?php echo $wafsystem->Config->SERVER_NAME_NORMALIZE ?> необходимо проверить безопасность
                 вашего подключения.</div>
             <div id="tWuBw3" style="display: none;">
                 <div id="challenge-success-text" class="h2" data-translate="success_text">Проверка выполнена успешно</div>
-                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?>...</div>
+                <div class="core-msg spacer" data-translate="waiting_response">Ожидание ответа <?php echo $wafsystem->Config->SERVER_NAME_NORMALIZE ?>...</div>
             </div><noscript>
                 <div class="h2"><span id="challenge-error-text" data-translate="enable_js">Enable JavaScript and cookies to continue</span></div>
             </noscript>
         </div>
     </div>
     <script type="text/javascript">
-        var HTTP_ANTIBOT_PATH = '<?= $wafsystem->Config->ANTIBOT_PATH; ?>';
-        var METRIKA_ID = '<?= $this->metrika; ?>';
-        var REMOTE_ADDR = '<?= $wafsystem->Profile->IP; ?>';
-        var UTM_REFERRER = '<?= $this->utm_referrer; ?>';
-        var SAVE_REFERER = '<?= $this->save_referer; ?>';
-        var CSRF = '<?= WAFSystem\CSRF::getInstance($wafsystem)->createCSRF() ?>';
+        var HTTP_ANTIBOT_PATH = '<?php echo $wafsystem->Config->ANTIBOT_PATH; ?>';
+        var METRIKA_ID = '<?php echo $this->metrika; ?>';
+        var REMOTE_ADDR = '<?php echo $wafsystem->Profile->IP; ?>';
+        var UTM_REFERRER = '<?php echo $this->utm_referrer; ?>';
+        var SAVE_REFERER = '<?php echo $this->save_referer; ?>';
+        var CSRF = '<?php echo WAFSystem\CSRF::getInstance($wafsystem)->createCSRF() ?>';
 
         const head2 = document.getElementById("pSht7");
         const form = document.getElementById("uHkM6");
@@ -501,12 +501,12 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
             }
             iframe.allow = "cross-origin-isolated; fullscreen; autoplay";
             iframe.sandbox = "allow-same-origin allow-scripts allow-popups";
-            iframe.id = "<?= $tagID ?>";
+            iframe.id = "<?php echo $tagID ?>";
             iframe.tabindex = 0;
             iframe.title = lang['widget_action'];
             iframe.style = "border: none; overflow: hidden; width: 100%; max-width: 100vw; min-width: 300px; ";
             iframe.scrolling = "no";
-            iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?= $this->getSkinCaptcha() ?>&csrf=" + CSRF;
+            iframe.src = HTTP_ANTIBOT_PATH + "xhr.php?skin=<?php echo $this->getSkinCaptcha() ?>&csrf=" + CSRF;
 
             // Загружаем, но не показываем iframe
             form.style.cssText = "position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0;";
@@ -532,7 +532,7 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
                             const img = document.createElement('img');
                             img.src = '/favicon.ico';
                             img.className = 'heading-favicon';
-                            img.alt = 'Icon <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?>';
+                            img.alt = 'Icon <?php echo $wafsystem->Config->SERVER_NAME_NORMALIZE ?>';
                             h1.insertBefore(img, h1.firstChild);
                         }
                     })
@@ -540,18 +540,18 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
             }, 0);
 
             var cpoLang = document.createElement('script');
-            cpoLang.src = '<?= $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
+            cpoLang.src = '<?php echo $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpoLang);
 
             var cpo = document.createElement('script');
-            cpo.src = '<?= $wafsystem->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
+            cpo.src = '<?php echo $wafsystem->Config->ANTIBOT_PATH . 'js/api.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/api.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpo);
         }());
     </script>
     <div class="footer" role="contentinfo">
         <div class="footer-inner">
             <div class="clearfix diagnostic-wrapper">
-                <div class="ray-id">Ray ID: <code><?= $wafsystem->Profile->RayID; ?></code></div>
+                <div class="ray-id">Ray ID: <code><?php echo $wafsystem->Profile->RayID; ?></code></div>
             </div>
             <div class="text-center" id="footer-text"><span data-translate="performance_security">Производительность и безопасность на платформе</span> <a
                     rel="noopener noreferer" href="https://github.com/githubniko/antibot"

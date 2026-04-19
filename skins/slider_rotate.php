@@ -26,13 +26,13 @@ $langMap = [
         "send_feedback" => "发送反馈",
     ],
 ];
-?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
+?><html lang="<?php echo $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
     <meta http-equiv="content-security-policy"
-        content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-    <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
+        content="default-src 'none'; script-src 'nonce-<?php echo $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
+    <title><?php echo $langMap[$antiBot->Profile->Language]['title'] ?></title>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -937,7 +937,7 @@ $langMap = [
                         <div class="slider-progress"></div>
                         <div class="slider-thumb" id="slider-thumb"></div>
                     </div>
-                    <div class="slider-text"><?= $langMap[$antiBot->Profile->Language]['action_name'] ?></div>
+                    <div class="slider-text"><?php echo $langMap[$antiBot->Profile->Language]['action_name'] ?></div>
                 </div>
             </div>
             <div id="verifying" class="aw-container" style="display: none;">
@@ -958,17 +958,17 @@ $langMap = [
                             transform="rotate(-45 5.45408 5.45404)" class="circle"></line>
                     </svg>
                 </div>
-                <div id="verifying-msg"><span id="verifying-text"><?= $langMap[$antiBot->Profile->Language]['checking_progress'] ?></span><br>
-                    <div id="error-overrun" class="error-message" style="display: none;"><span id="fr-overrun"><?= $langMap[$antiBot->Profile->Language]['stuck_here'] ?></span>
-                        <a href="#refresh" id="fr-overrun-link"><?= $langMap[$antiBot->Profile->Language]['send_feedback'] ?></a>
+                <div id="verifying-msg"><span id="verifying-text"><?php echo $langMap[$antiBot->Profile->Language]['checking_progress'] ?></span><br>
+                    <div id="error-overrun" class="error-message" style="display: none;"><span id="fr-overrun"><?php echo $langMap[$antiBot->Profile->Language]['stuck_here'] ?></span>
+                        <a href="#refresh" id="fr-overrun-link"><?php echo $langMap[$antiBot->Profile->Language]['send_feedback'] ?></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script type="text/javascript" nonce="<?= $nonce ?>">
-        let CSRF = "<?= $_REQUEST["csrf"] ?>";
-        var HTTP_ANTIBOT_PATH = '<?= $antiBot->Config->ANTIBOT_PATH; ?>';
+    <script type="text/javascript" nonce="<?php echo $nonce ?>">
+        let CSRF = "<?php echo $_REQUEST["csrf"] ?>";
+        var HTTP_ANTIBOT_PATH = '<?php echo $antiBot->Config->ANTIBOT_PATH; ?>';
 
         // Код для слайдера
         const wrapper = document.getElementById('slider-wrapper');
@@ -1094,7 +1094,7 @@ $langMap = [
 
             const percent = Math.round((thumbPosition / maxPosition) * 100);
             if (percent >= 90) {
-                <?= $funcNameSucc ?>();
+                <?php echo $funcNameSucc ?>();
             }
         });
 
@@ -1112,11 +1112,11 @@ $langMap = [
 
             const percent = Math.round((thumbPosition / maxPosition) * 100);
             if (percent >= 90) {
-                <?= $funcNameSucc ?>();
+                <?php echo $funcNameSucc ?>();
             }
         });
 
-        function <?= $funcNameSucc ?>() {
+        function <?php echo $funcNameSucc ?>() {
             // Плавное исчезновение капчи
             captcha.style.opacity = '0';
             captcha.style.transform = 'translateY(-20px)';
@@ -1126,10 +1126,10 @@ $langMap = [
             wrapper.style.display = 'none';
             loadingSpinner.style.display = 'grid';
 
-            <?= $funcName ?>('<?= $antiBot->Marker->getNameMarker() ?>');
+            <?php echo $funcName ?>('<?php echo $antiBot->Marker->getNameMarker() ?>');
         }
 
-        function <?= $funcName ?>(func) {
+        function <?php echo $funcName ?>(func) {
             var xhr = new XMLHttpRequest();
             var visitortime = new Date();
 

@@ -3,12 +3,12 @@ $nonce = \Utility\GenerateRandomName::genKey(17);
 $funcName = \Utility\GenerateRandomName::genFuncName();
 $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
 // $tagCheckbox = Utility\GenerateRandomName::genFuncName(4, 6);
-?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
+?><html lang="<?php echo $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
   <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
   <meta http-equiv="content-security-policy"
-    content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
+    content="default-src 'none'; script-src 'nonce-<?php echo $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
   <title>Checking your Browser…</title>
   <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -160,7 +160,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
     </div>
   </div>
 
-  <script type="text/javascript" nonce="<?= $nonce ?>">
+  <script type="text/javascript" nonce="<?php echo $nonce ?>">
     const bar = document.querySelector('.bar');
     const barBg = document.querySelector('.bar-bg');
     const dot = document.querySelector('.dot');
@@ -259,7 +259,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
         percentBox.classList.add('hint');
 
         if (!holdStart) holdStart = Date.now();
-        if (Date.now() - holdStart > 500) <?= $funcNameSucc ?>();
+        if (Date.now() - holdStart > 500) <?php echo $funcNameSucc ?>();
       } else {
         percentBox.classList.remove('hint');
         holdStart = null;
@@ -309,7 +309,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
     });
 
     /* успех */
-    function <?= $funcNameSucc ?>() {
+    function <?php echo $funcNameSucc ?>() {
       dragging = false;
       dot.classList.add('ok');
       dot.textContent = 'OK';
@@ -319,7 +319,7 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
       barBg.style.background = '#28ff5a';
       dot.style.background = '#28ff5a';
 
-      <?= $funcName ?>('<?= $antiBot->Marker->getNameMarker() ?>');
+      <?php echo $funcName ?>('<?php echo $antiBot->Marker->getNameMarker() ?>');
     }
 
     // Инициализируем после загрузки страницы
@@ -338,10 +338,10 @@ $funcNameSucc = \Utility\GenerateRandomName::genFuncName();
       }
     });
 
-    let CSRF = "<?= $_REQUEST["csrf"] ?>";
-    var HTTP_ANTIBOT_PATH = '<?= $antiBot->Config->ANTIBOT_PATH; ?>';
+    let CSRF = "<?php echo $_REQUEST["csrf"] ?>";
+    var HTTP_ANTIBOT_PATH = '<?php echo $antiBot->Config->ANTIBOT_PATH; ?>';
 
-    function <?= $funcName ?>(func) {
+    function <?php echo $funcName ?>(func) {
       var xhr = new XMLHttpRequest();
       var visitortime = new Date();
 

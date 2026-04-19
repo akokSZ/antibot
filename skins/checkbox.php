@@ -42,13 +42,13 @@ $langMap = [
         "time_expired" => "时间已到",
     ],
 ]
-?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
+?><html lang="<?php echo $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
     <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
     <meta http-equiv="content-security-policy"
-        content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-    <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
+        content="default-src 'none'; script-src 'nonce-<?php echo $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
+    <title><?php echo $langMap[$antiBot->Profile->Language]['title'] ?></title>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -306,10 +306,10 @@ $langMap = [
 <body>
     <div style="max-width: 300px; height: 65px;">
         <div id="content">
-            <div id="<?= $tagBlockInput ?>" style="display: grid;">
+            <div id="<?php echo $tagBlockInput ?>" style="display: grid;">
                 <div class="aw-c" role="alert" style="display: flex;">
-                    <label class="aw-lb"><input type="checkbox" id="<?= $tagCheckbox ?>"><span class="aw-i"></span><span
-                            class="aw-lb-t"><?= $langMap[$antiBot->Profile->Language]['checking_human'] ?></span></label>
+                    <label class="aw-lb"><input type="checkbox" id="<?php echo $tagCheckbox ?>"><span class="aw-i"></span><span
+                            class="aw-lb-t"><?php echo $langMap[$antiBot->Profile->Language]['checking_human'] ?></span></label>
                 </div>
             </div>
             <div id="verifying" class="aw-container" style="display: none;">
@@ -330,9 +330,9 @@ $langMap = [
                             transform="rotate(-45 5.45408 5.45404)" class="circle"></line>
                     </svg>
                 </div>
-                <div id="verifying-msg"><span id="verifying-text"><?= $langMap[$antiBot->Profile->Language]['checking_progress'] ?></span><br>
-                    <div id="error-overrun" class="error-message" style="display: none;"><span id="fr-overrun"><?= $langMap[$antiBot->Profile->Language]['stuck_here'] ?></span>
-                        <a href="#refresh" id="fr-overrun-link"><?= $langMap[$antiBot->Profile->Language]['send_feedback'] ?></a>
+                <div id="verifying-msg"><span id="verifying-text"><?php echo $langMap[$antiBot->Profile->Language]['checking_progress'] ?></span><br>
+                    <div id="error-overrun" class="error-message" style="display: none;"><span id="fr-overrun"><?php echo $langMap[$antiBot->Profile->Language]['stuck_here'] ?></span>
+                        <a href="#refresh" id="fr-overrun-link"><?php echo $langMap[$antiBot->Profile->Language]['send_feedback'] ?></a>
                     </div>
                 </div>
             </div>
@@ -343,9 +343,9 @@ $langMap = [
                         d="M15.9288 16.2308H13.4273L13.073 7H16.2832L15.9288 16.2308ZM14.6781 19.1636C15.1853 19.1636 15.5918 19.3129 15.8976 19.6117C16.2103 19.9105 16.3666 20.2927 16.3666 20.7583C16.3666 21.2169 16.2103 21.5956 15.8976 21.8944C15.5918 22.1932 15.1853 22.3425 14.6781 22.3425C14.1778 22.3425 13.7713 22.1932 13.4586 21.8944C13.1529 21.5956 13 21.2169 13 20.7583C13 20.2997 13.1529 19.921 13.4586 19.6222C13.7713 19.3164 14.1778 19.1636 14.6781 19.1636Z">
                     </path>
                 </svg>
-                <div id="failure-msg"><span id="fail-text"><?= $langMap[$antiBot->Profile->Language]['failure'] ?></span>
-                    <div id="having-trouble-message" class="error-message"><span id="fr-helper"><?= $langMap[$antiBot->Profile->Language]['problems'] ?></span><a
-                            href="#" id="fr-helper-link"><?= $langMap[$antiBot->Profile->Language]['refresh'] ?></a></div>
+                <div id="failure-msg"><span id="fail-text"><?php echo $langMap[$antiBot->Profile->Language]['failure'] ?></span>
+                    <div id="having-trouble-message" class="error-message"><span id="fr-helper"><?php echo $langMap[$antiBot->Profile->Language]['problems'] ?></span><a
+                            href="#" id="fr-helper-link"><?php echo $langMap[$antiBot->Profile->Language]['refresh'] ?></a></div>
                 </div>
             </div>
             <div id="expired" class="aw-container" role="alert" style="display: none;">
@@ -356,8 +356,8 @@ $langMap = [
                     </path>
                 </svg>
                 <div id="expiry-msg">
-                    <p id="expired-text"><?= $langMap[$antiBot->Profile->Language]['session_expired'] ?><span id="full-stop-expired-text">. </span><a href="#refresh"
-                            id="expired-refresh-link"><?= $langMap[$antiBot->Profile->Language]['refresh'] ?></a></p>
+                    <p id="expired-text"><?php echo $langMap[$antiBot->Profile->Language]['session_expired'] ?><span id="full-stop-expired-text">. </span><a href="#refresh"
+                            id="expired-refresh-link"><?php echo $langMap[$antiBot->Profile->Language]['refresh'] ?></a></p>
                 </div>
             </div>
             <div id="timeout" class="aw-container" role="alert" style="display: none;">
@@ -368,18 +368,18 @@ $langMap = [
                     </path>
                 </svg>
                 <div id="timeout-msg">
-                    <p id="timeout-text"><?= $langMap[$antiBot->Profile->Language]['time_expired'] ?><span id="full-stop-timeout-text">. </span><a href="#refresh"
-                            id="timeout-refresh-link"><?= $langMap[$antiBot->Profile->Language]['refresh'] ?></a></p>
+                    <p id="timeout-text"><?php echo $langMap[$antiBot->Profile->Language]['time_expired'] ?><span id="full-stop-timeout-text">. </span><a href="#refresh"
+                            id="timeout-refresh-link"><?php echo $langMap[$antiBot->Profile->Language]['refresh'] ?></a></p>
                 </div>
             </div>
         </div>
     </div>
-    <script type="text/javascript" nonce="<?= $nonce ?>">
-        let CSRF = "<?= $_REQUEST["csrf"] ?>";
-        var HTTP_ANTIBOT_PATH = '<?= $antiBot->Config->ANTIBOT_PATH; ?>';
+    <script type="text/javascript" nonce="<?php echo $nonce ?>">
+        let CSRF = "<?php echo $_REQUEST["csrf"] ?>";
+        var HTTP_ANTIBOT_PATH = '<?php echo $antiBot->Config->ANTIBOT_PATH; ?>';
 
-        const input = document.getElementById("<?= $tagCheckbox ?>");
-        const blockInput = document.getElementById("<?= $tagBlockInput ?>");
+        const input = document.getElementById("<?php echo $tagCheckbox ?>");
+        const blockInput = document.getElementById("<?php echo $tagBlockInput ?>");
         const blockVerifying = document.getElementById("verifying");
         const blockFail = document.getElementById("fail");
 
@@ -394,7 +394,7 @@ $langMap = [
             blockFail.style.display = "";
         }
 
-        function <?= $funcName ?>(func) {
+        function <?php echo $funcName ?>(func) {
             var xhr = new XMLHttpRequest();
             var visitortime = new Date();
 
@@ -454,7 +454,7 @@ $langMap = [
             if (this.checked) {
                 blockInput.style.display = "none";
                 blockVerifying.style.display = "";
-                <?= $funcName ?>('<?= $antiBot->Marker->getNameMarker() ?>');
+                <?php echo $funcName ?>('<?php echo $antiBot->Marker->getNameMarker() ?>');
             }
         });
 

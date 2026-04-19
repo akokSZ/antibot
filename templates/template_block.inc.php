@@ -1,10 +1,10 @@
 <?
 $wafsystem = \WAFSystem\WAFSystem::getInstance();
-?><!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="<?= $wafsystem->Profile->LangAttr ?>"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="<?= $wafsystem->Profile->LangAttr ?>"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="<?= $wafsystem->Profile->LangAttr ?>"> <![endif]-->
+?><!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="<?php echo $wafsystem->Profile->LangAttr ?>"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="<?php echo $wafsystem->Profile->LangAttr ?>"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="<?php echo $wafsystem->Profile->LangAttr ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="<?= $wafsystem->Profile->LangAttr ?>"> <!--<![endif]-->
+<html class="no-js" lang="<?php echo $wafsystem->Profile->LangAttr ?>"> <!--<![endif]-->
 
 <head>
   <title>Требуется внимание!</title>
@@ -1339,7 +1339,7 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
     <div id="ni-error-details" class="ni-error-details-wrapper">
       <div class="ni-wrapper ni-header ni-error-overview">
         <h1 data-translate="block_headline">Извините, вы были заблокированы.</h1>
-        <h2 class="ni-subheadline"><span data-translate="unable_to_access">Вы не можете получить доступ к</span> <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?>
+        <h2 class="ni-subheadline"><span data-translate="unable_to_access">Вы не можете получить доступ к</span> <?php echo $wafsystem->Config->SERVER_NAME_NORMALIZE ?>
         </h2>
       </div><!-- /.header -->
 
@@ -1376,12 +1376,12 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
 
       <div class="ni-error-footer ni-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
         <p class="text-13">
-          <span class="ni-footer-item sm:block sm:mb-1">Ray ID: <strong class="font-semibold"><?= $wafsystem->Profile->RayID; ?></strong></span>
+          <span class="ni-footer-item sm:block sm:mb-1">Ray ID: <strong class="font-semibold"><?php echo $wafsystem->Profile->RayID; ?></strong></span>
           <span class="ni-footer-separator sm:hidden">&bull;</span>
           <span id="ni-footer-item-ip" class="ni-footer-item hidden sm:block sm:mb-1">
             Your IP:
             <button type="button" id="ni-footer-ip-reveal" class="ni-footer-ip-reveal-btn" data-translate="click_to_reveal">Нажмите, чтобы открыть</button>
-            <span class="hidden" id="ni-footer-ip"><?= $_SERVER['REMOTE_ADDR']; ?></span>
+            <span class="hidden" id="ni-footer-ip"><?php echo $_SERVER['REMOTE_ADDR']; ?></span>
             <span class="ni-footer-separator sm:hidden">&bull;</span>
           </span>
           <span class="ni-footer-item sm:block sm:mb-1"><span data-translate="performance_security">Производительность и безопасность на платформе</span> <a
@@ -1390,7 +1390,7 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
 
         </p>
         <script>
-          var HTTP_ANTIBOT_PATH = '<?= $wafsystem->Config->ANTIBOT_PATH; ?>';
+          var HTTP_ANTIBOT_PATH = '<?php echo $wafsystem->Config->ANTIBOT_PATH; ?>';
           (function() {
             function d() {
               var b = a.getElementById("ni-footer-item-ip"),
@@ -1413,14 +1413,14 @@ $wafsystem = \WAFSystem\WAFSystem::getInstance();
                         const img = document.createElement('img');
                         img.src = '/favicon.ico';
                         img.className = 'heading-favicon';
-                        img.alt = lang['icon'] + ' <?= $wafsystem->Config->SERVER_NAME_NORMALIZE ?>';
+                        img.alt = lang['icon'] + ' <?php echo $wafsystem->Config->SERVER_NAME_NORMALIZE ?>';
                         h1.insertBefore(img, h1.firstChild);
                     }
                 })
                 .catch(() => {}); // Игнорируем ошибки
 
             var cpoLang = document.createElement('script');
-            cpoLang.src = '<?= $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
+            cpoLang.src = '<?php echo $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js?' . filemtime($wafsystem->Config->DOCUMENT_ROOT . $wafsystem->Config->ANTIBOT_PATH . 'js/lang.js'); ?>';
             document.getElementsByTagName('head')[0].appendChild(cpoLang);
         }());
           })();

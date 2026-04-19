@@ -92,13 +92,13 @@ if (empty($existingImages)) {
 }
 
 $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
-?><html lang="<?= $antiBot->Profile->LangAttr ?>" dir="ltr">
+?><html lang="<?php echo $antiBot->Profile->LangAttr ?>" dir="ltr">
 
 <head>
   <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
   <meta http-equiv="content-security-policy"
-    content="default-src 'none'; script-src 'nonce-<?= $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
-  <title><?= $langMap[$antiBot->Profile->Language]['title'] ?></title>
+    content="default-src 'none'; script-src 'nonce-<?php echo $nonce; ?>' 'unsafe-eval'; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'self' blob:; child-src 'self' blob:; form-action 'none'; base-uri 'self'">
+  <title><?php echo $langMap[$antiBot->Profile->Language]['title'] ?></title>
   <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <style>
@@ -374,12 +374,12 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
 <body>
   <div class="captcha-container">
     <div class="question">
-      <div class="question-text"><?= $langMap[$antiBot->Profile->Language]['exercise'] ?></div>
+      <div class="question-text"><?php echo $langMap[$antiBot->Profile->Language]['exercise'] ?></div>
       <?php if (!$useImages): ?>
-        <div class="target-emoji"><?= $targetEmoji ?></div>
+        <div class="target-emoji"><?php echo $targetEmoji ?></div>
       <?php else: ?>
         <div class="target-image" id="targetImageContainer">
-          <img src="<?= $imageBaseUrl . $targetImage ?>" alt="target image" id="targetImg">
+          <img src="<?php echo $imageBaseUrl . $targetImage ?>" alt="target image" id="targetImg">
           <canvas class="noise-canvas" id="noiseCanvas"></canvas>
         </div>
       <?php endif; ?>
@@ -390,11 +390,11 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
     <div class="message" id="message"></div>
   </div>
 
-  <script type="text/javascript" nonce="<?= $nonce ?>">
+  <script type="text/javascript" nonce="<?php echo $nonce ?>">
     (function() {
-      const optionsData = <?= json_encode($options) ?>;
-      const useImages = <?= $useImages ? 'true' : 'false' ?>;
-      const targetEmoji = '<?= $targetForJs ?>';
+      const optionsData = <?php echo json_encode($options) ?>;
+      const useImages = <?php echo $useImages ? 'true' : 'false' ?>;
+      const targetEmoji = '<?php echo $targetForJs ?>';
       const messageDiv = document.getElementById('message');
       const container = document.querySelector('.captcha-container');
 
@@ -509,7 +509,7 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
           container.classList.add('disabled');
 
           // Отправляем успех
-          await <?= $funcName ?>('<?= $antiBot->Marker->getNameMarker() ?>');
+          await <?php echo $funcName ?>('<?php echo $antiBot->Marker->getNameMarker() ?>');
         } else {
           // Неправильный ответ
           element.classList.add('wrong');
@@ -520,10 +520,10 @@ $imageBaseUrl = rtrim($antiBot->Config->ANTIBOT_PATH, '/') . $skinPathRelative;
         }
       }
 
-      let CSRF = "<?= $_REQUEST["csrf"] ?>";
-      var HTTP_ANTIBOT_PATH = '<?= $antiBot->Config->ANTIBOT_PATH; ?>';
+      let CSRF = "<?php echo $_REQUEST["csrf"] ?>";
+      var HTTP_ANTIBOT_PATH = '<?php echo $antiBot->Config->ANTIBOT_PATH; ?>';
 
-      function <?= $funcName ?>(func) {
+      function <?php echo $funcName ?>(func) {
         return new Promise((resolve, reject) => {
           var xhr = new XMLHttpRequest();
 
