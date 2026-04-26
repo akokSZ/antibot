@@ -21,7 +21,7 @@ class SysUpdate
     {
         $this->Config = $config;
         $this->Logger = $logger;
-        
+
 
         $this->enabled = $this->Config->init('sysupdate', 'enabled', 'Off', 'On - обновит систему при следующем запуске');
         $this->branch = $this->Config->init('sysupdate', 'branch', 'master', 'master - стабильный выпуск, dev - для тестировщиков');
@@ -59,7 +59,6 @@ class SysUpdate
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'AntibotWAF_System');
         $response = curl_exec($ch);
-        curl_close($ch);
 
         if (!$response) {
             $this->Logger->log("Не удалось получить данные из GitHub API.", [static::class]);
@@ -82,7 +81,7 @@ class SysUpdate
     private function isUpdate()
     {
         $this->lastCommitDate = $this->GetLastDateUpdate();
-        if($this->lastCommitDate == null) {
+        if ($this->lastCommitDate == null) {
             return true;
         }
         if (!empty($this->lastUpdate) && $this->lastCommitDate <= strtotime($this->lastUpdate)) {
@@ -128,6 +127,7 @@ class SysUpdate
             $exclude = [
                 '.git',
                 '.gitignore',
+                '.ignoreupdate',
                 'lists',
                 'logs',
                 'cache',
@@ -137,6 +137,7 @@ class SysUpdate
                 '*.origin',
                 basename($zipFile) // архив
             ];
+            $exclude = array_merge($exclude, $this->getIgnoreUpdateExclude($baseDir));
             $this->removeDirectory($baseDir, $exclude);
         }
 
@@ -174,17 +175,57 @@ class SysUpdate
     /**
      * Функция для удаления папки рекурсивно
      */
+    private function getIgnoreUpdateExclude($baseDir)
+    {
+        $ignoreFile = $baseDir . '/.ignoreupdate';
+
+        if (!is_file($ignoreFile) || !is_readable($ignoreFile)) {
+            return [];
+        }
+
+        $lines = file($ignoreFile, FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            $this->Logger->log("Не удалось прочитать .ignoreupdate.", [static::class]);
+            return [];
+        }
+
+        $exclude = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            if ($line === '' || strpos('#;', $line[0]) !== false || strpos($line, '//') === 0) {
+                continue;
+            }
+
+            $line = str_replace('\\', '/', $line);
+            $line = preg_replace('#/+#', '/', $line);
+            $line = preg_replace('#^\./#', '', $line);
+            $line = trim($line, '/');
+
+            if ($line === '') {
+                continue;
+            }
+
+            $exclude[] = $line;
+        }
+
+        return array_values(array_unique($exclude));
+    }
+
     private function removeDirectory($dir, $exclude = [])
     {
         if (!is_dir($dir)) return;
 
+        $rootDir = rtrim(str_replace('\\', '/', substr($this->Config->BasePath, 0, -1)), '/');
         $files = scandir($dir);
 
         foreach ($files as $file) {
             if ($file == '.' || $file == '..') continue;
 
             $path = $dir . '/' . $file;
-            $shouldExclude = false;
+            $relativePath = ltrim(substr(str_replace('\\', '/', $path), strlen($rootDir)), '/');
+            $shouldExclude = $this->isExcludedPath($file, $relativePath, $exclude);
 
             // Проверка на исключения (точное совпадение или по маске)
             foreach ($exclude as $pattern) {
@@ -216,5 +257,30 @@ class SysUpdate
         if (realpath($dir) != realpath($this->Config->BasePath)) {
             rmdir($dir);
         }
+    }
+
+    private function isExcludedPath($file, $relativePath, $exclude)
+    {
+        foreach ($exclude as $pattern) {
+            $pattern = trim(str_replace('\\', '/', $pattern), '/');
+
+            if ($pattern === '') {
+                continue;
+            }
+
+            if (strpos($pattern, '*') !== false) {
+                $regex = '/^' . str_replace(['.', '*'], ['\.', '.*'], $pattern) . '$/';
+                if (preg_match($regex, $file) || preg_match($regex, $relativePath)) {
+                    return true;
+                }
+                continue;
+            }
+
+            if ($file == $pattern || $relativePath == $pattern || strpos($relativePath, $pattern . '/') === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
