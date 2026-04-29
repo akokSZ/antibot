@@ -6,3 +6,4 @@ lists/*
 logs/*
 cache/*
 .ignoreupdate
+.gitignore
