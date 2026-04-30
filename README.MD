@@ -105,7 +105,7 @@ Turnstile — это невидимая или интерактивная CAPTCH
 
 ### 1. Получите ключи Turnstile
 
-Перейдите на [dash.cloudflare.com](https://dash.cloudflare.com/) → **Turnstile** → **Add site** и получите два ключа: Site Key (публичный).
+Перейдите на [dash.cloudflare.com](https://dash.cloudflare.com/) → **Turnstile** → **Add site** и получите: Site Key (публичный).
 
 ### 2. Вставьте Site Key в файл капчи
 
