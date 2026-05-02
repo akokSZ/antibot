@@ -1,0 +1,190 @@
+<?
+$nonce = \Utility\GenerateRandomName::genKey(17);
+$verifyFuncName = \Utility\GenerateRandomName::genFuncName();
+$turnstileLoadFunc = \Utility\GenerateRandomName::genFuncName();
+$turnstileContainerId = Utility\GenerateRandomName::genFuncName(4, 6);
+
+$langMap = [
+    "ru" => [
+        "title" => "Проверяем ваш Браузер...",
+        "checking_human" => "Подтвердите, что вы человек",
+    ],
+    "en" => [
+        "title" => "Checking your Browser...",
+        "checking_human" => "Confirm you're human",
+    ],
+    "zh" => [
+        "title" => "正在检查您的浏览器...",
+        "checking_human" => "请确认您是人类",
+    ],
+];
+
+$turnstileSiteKey = $antiBot->Config->get('turnstile', 'site_key', '');
+
+$language = isset($antiBot->Profile->Language) ? $antiBot->Profile->Language : "en";
+$language = isset($langMap[$language]) ? $language : "en";
+?><html lang="<?php echo $antiBot->Profile->LangAttr ?>" dir="ltr">
+
+<head>
+    <meta http-equiv="x-ua-compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="content-security-policy"
+        content="default-src 'none'; script-src 'nonce-<?php echo $nonce; ?>' 'unsafe-eval' https://challenges.cloudflare.com; script-src-attr 'none'; worker-src blob:; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' blob: https://challenges.cloudflare.com; child-src 'self' blob: https://challenges.cloudflare.com; form-action 'none'; base-uri 'self'">
+    <title><?php echo $langMap[$language]['title'] ?></title>
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .turnstile-wrapper {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .turnstile-label {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #fff;
+            }
+        }
+    </style>
+    <script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=<?php echo $turnstileLoadFunc ?>"
+        defer nonce="<?php echo $nonce ?>"></script>
+</head>
+
+<body>
+    <div class="turnstile-wrapper">
+        <span class="turnstile-label"><?php echo $langMap[$language]['checking_human'] ?></span>
+        <div id="<?php echo $turnstileContainerId ?>"></div>
+    </div>
+    <script type="text/javascript" nonce="<?php echo $nonce ?>">
+        let CSRF = <?php echo json_encode(isset($_REQUEST["csrf"]) ? $_REQUEST["csrf"] : "", JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+        const HTTP_ANTIBOT_PATH = <?php echo json_encode($antiBot->Config->ANTIBOT_PATH, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+        const TURNSTILE_SITEKEY = <?php echo json_encode($turnstileSiteKey, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+        const TURNSTILE_LANGUAGE = <?php echo json_encode($language, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+        const TURNSTILE_MARKER = <?php echo json_encode($antiBot->Marker->getNameMarker(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+
+        let turnstileWidgetId = null;
+
+        function resetTurnstileWidget() {
+            if (typeof turnstile === 'undefined' || turnstileWidgetId === null) {
+                return;
+            }
+
+            turnstile.reset(turnstileWidgetId);
+        }
+
+        function <?php echo $turnstileLoadFunc ?>() {
+            if (typeof turnstile === 'undefined') {
+                console.error('Turnstile API is unavailable');
+                return;
+            }
+
+            if (!TURNSTILE_SITEKEY) {
+                console.error('Turnstile sitekey is empty');
+                return;
+            }
+
+            turnstileWidgetId = turnstile.render('#<?php echo $turnstileContainerId ?>', {
+                sitekey: TURNSTILE_SITEKEY,
+                theme: 'auto',
+                size: 'flexible',
+                language: TURNSTILE_LANGUAGE,
+                callback: function(token) {
+                    <?php echo $verifyFuncName ?>(TURNSTILE_MARKER, token);
+                },
+                'expired-callback': function() {
+                    resetTurnstileWidget();
+                },
+                'timeout-callback': function() {
+                    resetTurnstileWidget();
+                },
+                'error-callback': function(errorCode) {
+                    console.error('Turnstile error:', errorCode);
+                },
+                'unsupported-callback': function() {
+                    console.error('Turnstile is unsupported in this browser');
+                }
+            });
+        }
+
+        function <?php echo $verifyFuncName ?>(func, turnstileToken) {
+            var xhr = new XMLHttpRequest();
+
+            let obj = {
+                func: func == undefined ? 'csrf_token' : func,
+                csrf_token: CSRF,
+                mainFrame: window.top === window.self,
+                turnstile_token: turnstileToken == undefined ? '' : turnstileToken,
+                turnstileToken: turnstileToken == undefined ? '' : turnstileToken,
+                'cf-turnstile-response': turnstileToken == undefined ? '' : turnstileToken,
+            };
+
+            let data = null;
+            try {
+                data = JSON.stringify(obj);
+            } catch (e) {
+                console.error('Failed to stringify data:', e);
+                resetTurnstileWidget();
+                return;
+            }
+
+            xhr.open('POST', HTTP_ANTIBOT_PATH + 'xhr.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = async function() {
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    console.error('Unexpected xhr status:', xhr.status);
+                    resetTurnstileWidget();
+                    return;
+                }
+
+                let data = null;
+                try {
+                    data = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    console.error('Failed to parse response:', e);
+                    resetTurnstileWidget();
+                    return;
+                }
+
+                CSRF = data.csrf_token;
+                if (CSRF == undefined || CSRF == '') {
+                    console.log('Error getting csrf_token');
+                    resetTurnstileWidget();
+                    return;
+                }
+
+                if (data.status == 'captcha') {
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('csrf', CSRF);
+                    window.location.href = currentUrl.toString();
+                } else if (data.status == 'allow') {
+                    parent.allow();
+                } else if (data.status == 'block') {
+                    setTimeout(parent.block, 1000);
+                } else if (data.status == 'fail') {
+                    resetTurnstileWidget();
+                } else if (data.status == 'refresh') {
+                    parent.refresh();
+                } else {
+                    console.log(data);
+                    resetTurnstileWidget();
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Network error occurred');
+                resetTurnstileWidget();
+            };
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
