@@ -54,6 +54,16 @@ $language = isset($langMap[$language]) ? $language : "en";
                 color: #fff;
             }
         }
+
+        /* Стабильная высота документа для расчёта scrollHeight (iframe подстраивается из JS). */
+        html {
+            overflow: visible;
+        }
+
+        body {
+            overflow: visible;
+            min-height: min-content;
+        }
     </style>
     <script
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=<?php echo $turnstileLoadFunc ?>"
@@ -73,6 +83,39 @@ $language = isset($langMap[$language]) ? $language : "en";
         const TURNSTILE_MARKER = <?php echo json_encode($antiBot->Marker->getNameMarker(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
         let turnstileWidgetId = null;
+
+        function syncParentCaptchaIframeHeight() {
+            if (!window.frameElement) {
+                return;
+            }
+            var root = document.documentElement;
+            var body = document.body;
+            var h = Math.max(
+                root.scrollHeight,
+                root.offsetHeight,
+                body ? body.scrollHeight : 0,
+                body ? body.offsetHeight : 0
+            );
+            window.frameElement.style.height = h + 'px';
+        }
+
+        function attachParentIframeHeightSync(extraRoot) {
+            syncParentCaptchaIframeHeight();
+            window.addEventListener('resize', syncParentCaptchaIframeHeight);
+            if (typeof ResizeObserver !== 'undefined') {
+                var ro = new ResizeObserver(syncParentCaptchaIframeHeight);
+                ro.observe(document.documentElement);
+                if (document.body) {
+                    ro.observe(document.body);
+                }
+                if (extraRoot) {
+                    ro.observe(extraRoot);
+                }
+            }
+            requestAnimationFrame(function() {
+                requestAnimationFrame(syncParentCaptchaIframeHeight);
+            });
+        }
 
         function resetTurnstileWidget() {
             if (typeof turnstile === 'undefined' || turnstileWidgetId === null) {
@@ -114,6 +157,7 @@ $language = isset($langMap[$language]) ? $language : "en";
                     console.error('Turnstile is unsupported in this browser');
                 }
             });
+            attachParentIframeHeightSync(document.getElementById('<?php echo $turnstileContainerId ?>'));
         }
 
         function <?php echo $verifyFuncName ?>(func, turnstileToken) {
