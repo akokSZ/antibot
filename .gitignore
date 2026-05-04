@@ -6,5 +6,3 @@ lists/*
 logs/*
 cache/*
 .ignoreupdate
-.gitignore
-#skins/turnstile.php
